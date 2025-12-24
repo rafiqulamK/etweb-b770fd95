@@ -45,6 +45,14 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-gradient-hero" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-glow opacity-50" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      
+      {/* Animated particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/30 rounded-full animate-float" style={{ animationDelay: "0s" }} />
+        <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-accent/40 rounded-full animate-float" style={{ animationDelay: "1s" }} />
+        <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-primary/20 rounded-full animate-float" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-2/3 right-1/3 w-2 h-2 bg-accent/30 rounded-full animate-float" style={{ animationDelay: "0.5s" }} />
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -80,7 +88,7 @@ export function HeroSection() {
             style={{ animationDelay: "0.3s" }}
           >
             <Link to="/contact">
-              <Button variant="gradient" size="xl" className="gap-2">
+              <Button variant="gradient" size="xl" className="gap-2 shadow-primary">
                 Start Your Project
                 <ArrowRight size={20} />
               </Button>
@@ -99,9 +107,9 @@ export function HeroSection() {
             style={{ animationDelay: "0.4s" }}
           >
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center group">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                <p className="text-sm text-muted-foreground mt-2">{stat.label}</p>
+                <p className="text-sm text-muted-foreground mt-2 group-hover:text-foreground transition-colors">{stat.label}</p>
               </div>
             ))}
           </div>

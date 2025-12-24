@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 interface Testimonial {
   id: string;
@@ -179,12 +180,11 @@ export default function TestimonialsManagement() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Avatar URL</label>
-                <Input
+                <label className="text-sm font-medium text-foreground mb-2 block">Avatar</label>
+                <ImageUpload
                   value={formData.client_avatar}
-                  onChange={(e) => setFormData({ ...formData, client_avatar: e.target.value })}
-                  placeholder="https://..."
-                  className="bg-secondary border-border"
+                  onChange={(url) => setFormData({ ...formData, client_avatar: url })}
+                  folder="testimonials"
                 />
               </div>
             </div>

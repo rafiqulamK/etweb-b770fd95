@@ -38,8 +38,54 @@ export function TestimonialsSection() {
     return (
       <section className="py-20 md:py-32 bg-card">
         <div className="container mx-auto px-4">
-          <div className="text-center">
-            <div className="animate-pulse">Loading testimonials...</div>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
+              Testimonials
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
+              What Our <span className="text-gradient">Clients Say</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gradient-card rounded-2xl border border-border/50 p-8 animate-pulse">
+                <div className="flex gap-1 mb-6">
+                  {[1, 2, 3, 4, 5].map((j) => (
+                    <div key={j} className="w-5 h-5 bg-muted rounded" />
+                  ))}
+                </div>
+                <div className="h-20 bg-muted rounded mb-8" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-muted" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-muted rounded w-24 mb-2" />
+                    <div className="h-3 bg-muted rounded w-32" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return (
+      <section className="py-20 md:py-32 bg-card relative">
+        <div className="absolute inset-0 bg-gradient-glow opacity-20" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
+              Testimonials
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
+              What Our <span className="text-gradient">Clients Say</span>
+            </h2>
+            <p className="text-muted-foreground text-lg mb-8">
+              We're building amazing relationships with our clients. 
+              Testimonials coming soon!
+            </p>
           </div>
         </div>
       </section>
