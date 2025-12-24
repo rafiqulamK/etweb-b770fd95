@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { GalleryUpload } from "@/components/admin/GalleryUpload";
 
 interface CaseStudy {
   id: string;
@@ -15,6 +17,7 @@ interface CaseStudy {
   client_name: string | null;
   technologies: string[] | null;
   featured_image: string | null;
+  gallery_images: string[] | null;
   results: string | null;
   status: string;
   created_at: string;
@@ -34,6 +37,7 @@ export default function PortfolioManagement() {
     client_name: "",
     technologies: "",
     featured_image: "",
+    gallery_images: [] as string[],
     results: "",
     status: "draft",
   });
@@ -70,6 +74,7 @@ export default function PortfolioManagement() {
       client_name: item.client_name || "",
       technologies: item.technologies?.join(", ") || "",
       featured_image: item.featured_image || "",
+      gallery_images: item.gallery_images || [],
       results: item.results || "",
       status: item.status,
     });
@@ -99,6 +104,7 @@ export default function PortfolioManagement() {
       client_name: formData.client_name || null,
       technologies: formData.technologies ? formData.technologies.split(",").map((t) => t.trim()) : null,
       featured_image: formData.featured_image || null,
+      gallery_images: formData.gallery_images.length > 0 ? formData.gallery_images : null,
       results: formData.results || null,
       status: formData.status,
     };
@@ -137,6 +143,7 @@ export default function PortfolioManagement() {
       client_name: "",
       technologies: "",
       featured_image: "",
+      gallery_images: [],
       results: "",
       status: "draft",
     });
@@ -219,12 +226,21 @@ export default function PortfolioManagement() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">Featured Image URL</label>
-              <Input
+              <label className="text-sm font-medium text-foreground mb-2 block">Featured Image</label>
+              <ImageUpload
                 value={formData.featured_image}
-                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                placeholder="https://..."
-                className="bg-secondary border-border"
+                onChange={(url) => setFormData({ ...formData, featured_image: url })}
+                folder="portfolio"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Gallery Images</label>
+              <GalleryUpload
+                value={formData.gallery_images}
+                onChange={(urls) => setFormData({ ...formData, gallery_images: urls })}
+                folder="portfolio/gallery"
+                maxImages={8}
               />
             </div>
 
