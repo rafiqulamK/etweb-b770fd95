@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { useBranding } from "@/hooks/useBranding";
 
 const footerLinks = {
   services: [
@@ -20,15 +21,23 @@ const footerLinks = {
   ],
 };
 
-const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/engineerstechbd", label: "Facebook" },
-  { icon: Linkedin, href: "https://linkedin.com/company/engineerstechbd", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com/engineerstechbd", label: "Twitter" },
-];
-
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  
+  const { branding } = useBranding();
+
+  const logoText = branding?.logo_text || "engineersTech";
+  const logoUrl = branding?.logo_url;
+  const tagline = branding?.tagline || "Enterprise Tech Solutions for the Future. We deliver cutting-edge software solutions that transform businesses.";
+  const email = branding?.company_email || "info@engineerstechbd.com";
+  const phone = branding?.company_phone || "+880 1234-567890";
+  const address = branding?.company_address || "Dhaka, Bangladesh";
+
+  const socialLinks = [
+    { icon: Facebook, href: branding?.facebook_url || "https://facebook.com/engineerstechbd", label: "Facebook" },
+    { icon: Linkedin, href: branding?.linkedin_url || "https://linkedin.com/company/engineerstechbd", label: "LinkedIn" },
+    { icon: Twitter, href: branding?.twitter_url || "https://twitter.com/engineerstechbd", label: "Twitter" },
+  ].filter(s => s.href);
+
   return (
     <footer className="bg-card border-t border-border relative">
       {/* Top glow effect */}
@@ -39,15 +48,25 @@ export function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center group-hover:shadow-primary transition-shadow">
-                <span className="text-primary-foreground font-bold text-xl">e</span>
-              </div>
+              {logoUrl ? (
+                <img src={logoUrl} alt={logoText} className="w-10 h-10 rounded-lg object-contain group-hover:shadow-primary transition-shadow" />
+              ) : (
+                <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center group-hover:shadow-primary transition-shadow">
+                  <span className="text-primary-foreground font-bold text-xl">e</span>
+                </div>
+              )}
               <span className="text-xl font-bold text-foreground">
-                engineers<span className="text-gradient">Tech</span>
+                {logoText.includes("Tech") ? (
+                  <>
+                    {logoText.replace("Tech", "")}<span className="text-gradient">Tech</span>
+                  </>
+                ) : (
+                  logoText
+                )}
               </span>
             </Link>
             <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-              Enterprise Tech Solutions for the Future. We deliver cutting-edge software solutions that transform businesses.
+              {tagline}
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -108,10 +127,10 @@ export function Footer() {
                   <Mail size={16} className="text-primary" />
                 </div>
                 <a
-                  href="mailto:info@engineerstechbd.com"
+                  href={`mailto:${email}`}
                   className="text-muted-foreground text-sm hover:text-primary transition-colors pt-1"
                 >
-                  info@engineerstechbd.com
+                  {email}
                 </a>
               </li>
               <li className="flex items-start gap-3 group">
@@ -119,10 +138,10 @@ export function Footer() {
                   <Phone size={16} className="text-primary" />
                 </div>
                 <a
-                  href="tel:+8801234567890"
+                  href={`tel:${phone.replace(/\s/g, '')}`}
                   className="text-muted-foreground text-sm hover:text-primary transition-colors pt-1"
                 >
-                  +880 1234-567890
+                  {phone}
                 </a>
               </li>
               <li className="flex items-start gap-3 group">
@@ -130,7 +149,7 @@ export function Footer() {
                   <MapPin size={16} className="text-primary" />
                 </div>
                 <span className="text-muted-foreground text-sm pt-1">
-                  Dhaka, Bangladesh
+                  {address}
                 </span>
               </li>
             </ul>
@@ -140,7 +159,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © {currentYear} engineersTech. All rights reserved.
+            © {currentYear} {logoText}. All rights reserved.
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (

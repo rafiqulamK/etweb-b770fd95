@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Save, Upload } from "lucide-react";
+import { Save } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export default function BrandingSettings() {
   const [loading, setLoading] = useState(true);
@@ -57,14 +58,39 @@ export default function BrandingSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-gradient-card rounded-2xl border border-border/50 p-6 space-y-4">
             <h2 className="text-lg font-semibold text-foreground">Brand Identity</h2>
+            
+            {/* Logo Upload */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Company Logo</label>
+              <ImageUpload
+                value={branding.logo_url || ""}
+                onChange={(url) => setBranding({ ...branding, logo_url: url })}
+                folder="branding"
+              />
+              <p className="text-xs text-muted-foreground mt-2">Recommended: 200x200px PNG or SVG with transparent background</p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Logo Text</label>
                 <Input value={branding.logo_text || ""} onChange={(e) => setBranding({ ...branding, logo_text: e.target.value })} className="bg-secondary border-border" />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Logo URL</label>
-                <Input value={branding.logo_url || ""} onChange={(e) => setBranding({ ...branding, logo_url: e.target.value })} placeholder="https://..." className="bg-secondary border-border" />
+                <label className="text-sm font-medium text-foreground mb-2 block">Primary Color</label>
+                <div className="flex gap-2">
+                  <Input 
+                    type="color" 
+                    value={branding.primary_color || "#90FFA3"} 
+                    onChange={(e) => setBranding({ ...branding, primary_color: e.target.value })} 
+                    className="w-14 h-10 p-1 bg-secondary border-border cursor-pointer" 
+                  />
+                  <Input 
+                    value={branding.primary_color || ""} 
+                    onChange={(e) => setBranding({ ...branding, primary_color: e.target.value })} 
+                    placeholder="#90FFA3" 
+                    className="bg-secondary border-border flex-1" 
+                  />
+                </div>
               </div>
             </div>
             <div>

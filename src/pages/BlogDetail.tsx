@@ -22,6 +22,7 @@ interface BlogPost {
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,12 +38,29 @@ export default function BlogDetail() {
 
       if (!error && data) {
         setPost(data);
+        // Fetch related posts
+        fetchRelatedPosts(data.id, data.seo_keywords);
       }
       setLoading(false);
     }
 
     fetchPost();
   }, [slug]);
+
+  const fetchRelatedPosts = async (currentId: string, keywords: string[] | null) => {
+    // Get other published posts, excluding current one
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("id, title, slug, excerpt, featured_image, created_at, published_at")
+      .eq("status", "published")
+      .neq("id", currentId)
+      .order("published_at", { ascending: false })
+      .limit(3);
+
+    if (data) {
+      setRelatedPosts(data as BlogPost[]);
+    }
+  };
 
   // Update page title and meta tags
   useEffect(() => {
@@ -80,7 +98,10 @@ export default function BlogDetail() {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-muted-foreground">Loading article...</p>
+          </div>
         </div>
       </Layout>
     );
@@ -229,6 +250,59 @@ export default function BlogDetail() {
           </div>
         </div>
       </section>
+
+      {/* Related Posts Section */}
+      {relatedPosts.length > 0 && (
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
+                Related Articles
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((relatedPost) => (
+                  <Link
+                    key={relatedPost.id}
+                    to={`/blog/${relatedPost.slug}`}
+                    className="group bg-gradient-card rounded-2xl border border-border/50 overflow-hidden hover:border-primary/50 transition-all"
+                  >
+                    {relatedPost.featured_image ? (
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={relatedPost.featured_image}
+                          alt={relatedPost.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                        <span className="text-4xl font-bold text-gradient">e</span>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {new Date(relatedPost.published_at || relatedPost.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </p>
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                        {relatedPost.title}
+                      </h3>
+                      {relatedPost.excerpt && (
+                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                          {relatedPost.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-16">

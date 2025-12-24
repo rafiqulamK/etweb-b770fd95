@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/hooks/useBranding";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -16,6 +17,10 @@ const navLinks = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { branding } = useBranding();
+
+  const logoText = branding?.logo_text || "engineersTech";
+  const logoUrl = branding?.logo_url;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
@@ -23,11 +28,21 @@ export function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xl">e</span>
-            </div>
+            {logoUrl ? (
+              <img src={logoUrl} alt={logoText} className="w-10 h-10 rounded-lg object-contain" />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xl">e</span>
+              </div>
+            )}
             <span className="text-xl font-bold text-foreground">
-              engineers<span className="text-gradient">Tech</span>
+              {logoText.includes("Tech") ? (
+                <>
+                  {logoText.replace("Tech", "")}<span className="text-gradient">Tech</span>
+                </>
+              ) : (
+                logoText
+              )}
             </span>
           </Link>
 

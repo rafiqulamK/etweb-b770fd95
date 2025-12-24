@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 interface SEOSetting {
   id: string;
@@ -71,6 +72,12 @@ export default function SEOSettings() {
         }
         return s;
       })
+    );
+  };
+
+  const handleOgImageChange = (id: string, url: string) => {
+    setSettings((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, og_image: url } : s))
     );
   };
 
@@ -155,52 +162,53 @@ export default function SEOSettings() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Meta Title</label>
-                    <Input
-                      value={setting.meta_title || ""}
-                      onChange={(e) => handleFieldChange(setting.id, "meta_title", e.target.value)}
-                      placeholder="Page title for search engines"
-                      className="bg-secondary border-border"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {(setting.meta_title?.length || 0)}/60 characters
-                    </p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="lg:col-span-2 space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Meta Title</label>
+                      <Input
+                        value={setting.meta_title || ""}
+                        onChange={(e) => handleFieldChange(setting.id, "meta_title", e.target.value)}
+                        placeholder="Page title for search engines"
+                        className="bg-secondary border-border"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {(setting.meta_title?.length || 0)}/60 characters
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Meta Description</label>
+                      <Textarea
+                        value={setting.meta_description || ""}
+                        onChange={(e) => handleFieldChange(setting.id, "meta_description", e.target.value)}
+                        placeholder="Description for search engines..."
+                        rows={2}
+                        className="bg-secondary border-border resize-none"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {(setting.meta_description?.length || 0)}/160 characters
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Keywords (comma separated)</label>
+                      <Input
+                        value={setting.meta_keywords?.join(", ") || ""}
+                        onChange={(e) => handleFieldChange(setting.id, "meta_keywords", e.target.value)}
+                        placeholder="keyword1, keyword2, keyword3"
+                        className="bg-secondary border-border"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">OG Image URL</label>
-                    <Input
+                    <label className="text-sm font-medium text-foreground mb-2 block">OG Image</label>
+                    <ImageUpload
                       value={setting.og_image || ""}
-                      onChange={(e) => handleFieldChange(setting.id, "og_image", e.target.value)}
-                      placeholder="https://..."
-                      className="bg-secondary border-border"
+                      onChange={(url) => handleOgImageChange(setting.id, url)}
+                      folder="seo"
+                      className="h-full"
                     />
+                    <p className="text-xs text-muted-foreground mt-2">Recommended: 1200x630px</p>
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Meta Description</label>
-                  <Textarea
-                    value={setting.meta_description || ""}
-                    onChange={(e) => handleFieldChange(setting.id, "meta_description", e.target.value)}
-                    placeholder="Description for search engines..."
-                    rows={2}
-                    className="bg-secondary border-border resize-none"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {(setting.meta_description?.length || 0)}/160 characters
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Keywords (comma separated)</label>
-                  <Input
-                    value={setting.meta_keywords?.join(", ") || ""}
-                    onChange={(e) => handleFieldChange(setting.id, "meta_keywords", e.target.value)}
-                    placeholder="keyword1, keyword2, keyword3"
-                    className="bg-secondary border-border"
-                  />
                 </div>
               </div>
             ))}
