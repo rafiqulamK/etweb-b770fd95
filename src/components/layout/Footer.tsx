@@ -27,34 +27,39 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+  
   return (
-    <footer className="bg-card border-t border-border">
+    <footer className="bg-card border-t border-border relative">
+      {/* Top glow effect */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+            <Link to="/" className="flex items-center gap-2 mb-4 group">
+              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center group-hover:shadow-primary transition-shadow">
                 <span className="text-primary-foreground font-bold text-xl">e</span>
               </div>
               <span className="text-xl font-bold text-foreground">
                 engineers<span className="text-gradient">Tech</span>
               </span>
             </Link>
-            <p className="text-muted-foreground text-sm mb-6">
+            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
               Enterprise Tech Solutions for the Future. We deliver cutting-edge software solutions that transform businesses.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-colors"
+                  className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/50 border border-transparent transition-all"
                   aria-label={social.label}
                 >
-                  <social.icon size={20} />
+                  <social.icon size={18} />
                 </a>
               ))}
             </div>
@@ -62,13 +67,13 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Services</h3>
+            <h3 className="text-foreground font-semibold mb-4 text-sm uppercase tracking-wider">Services</h3>
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-muted-foreground text-sm hover:text-primary transition-colors"
+                    className="text-muted-foreground text-sm hover:text-primary hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -79,13 +84,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Company</h3>
+            <h3 className="text-foreground font-semibold mb-4 text-sm uppercase tracking-wider">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-muted-foreground text-sm hover:text-primary transition-colors"
+                    className="text-muted-foreground text-sm hover:text-primary hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -96,29 +101,35 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Contact</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <Mail size={18} className="text-primary mt-0.5 shrink-0" />
+            <h3 className="text-foreground font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                  <Mail size={16} className="text-primary" />
+                </div>
                 <a
                   href="mailto:info@engineerstechbd.com"
-                  className="text-muted-foreground text-sm hover:text-primary transition-colors"
+                  className="text-muted-foreground text-sm hover:text-primary transition-colors pt-1"
                 >
                   info@engineerstechbd.com
                 </a>
               </li>
-              <li className="flex items-start gap-3">
-                <Phone size={18} className="text-primary mt-0.5 shrink-0" />
+              <li className="flex items-start gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                  <Phone size={16} className="text-primary" />
+                </div>
                 <a
                   href="tel:+8801234567890"
-                  className="text-muted-foreground text-sm hover:text-primary transition-colors"
+                  className="text-muted-foreground text-sm hover:text-primary transition-colors pt-1"
                 >
                   +880 1234-567890
                 </a>
               </li>
-              <li className="flex items-start gap-3">
-                <MapPin size={18} className="text-primary mt-0.5 shrink-0" />
-                <span className="text-muted-foreground text-sm">
+              <li className="flex items-start gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                  <MapPin size={16} className="text-primary" />
+                </div>
+                <span className="text-muted-foreground text-sm pt-1">
                   Dhaka, Bangladesh
                 </span>
               </li>
@@ -127,9 +138,9 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} engineersTech. All rights reserved.
+            © {currentYear} engineersTech. All rights reserved.
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (
