@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 interface BlogPost {
   id: string;
@@ -262,12 +263,11 @@ export default function BlogManagement() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Featured Image URL</label>
-                <Input
+                <label className="text-sm font-medium text-foreground mb-2 block">Featured Image</label>
+                <ImageUpload
                   value={formData.featured_image}
-                  onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                  placeholder="https://..."
-                  className="bg-secondary border-border"
+                  onChange={(url) => setFormData({ ...formData, featured_image: url })}
+                  folder="blog"
                 />
               </div>
 
