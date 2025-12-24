@@ -65,6 +65,54 @@ export type Database = {
         }
         Relationships: []
       }
+      branding_settings: {
+        Row: {
+          company_address: string | null
+          company_email: string | null
+          company_phone: string | null
+          facebook_url: string | null
+          id: string
+          linkedin_url: string | null
+          logo_text: string | null
+          logo_url: string | null
+          primary_color: string | null
+          tagline: string | null
+          twitter_url: string | null
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          company_address?: string | null
+          company_email?: string | null
+          company_phone?: string | null
+          facebook_url?: string | null
+          id?: string
+          linkedin_url?: string | null
+          logo_text?: string | null
+          logo_url?: string | null
+          primary_color?: string | null
+          tagline?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          company_address?: string | null
+          company_email?: string | null
+          company_phone?: string | null
+          facebook_url?: string | null
+          id?: string
+          linkedin_url?: string | null
+          logo_text?: string | null
+          logo_url?: string | null
+          primary_color?: string | null
+          tagline?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       case_studies: {
         Row: {
           client_name: string | null

@@ -25,6 +25,7 @@ const sidebarLinks = [
   { href: "/admin/messages", icon: Mail, label: "Messages" },
   { href: "/admin/seo", icon: Search, label: "SEO Settings" },
   { href: "/admin/chatbot", icon: Bot, label: "Chatbot Config" },
+  { href: "/admin/branding", icon: Settings, label: "Branding" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 
