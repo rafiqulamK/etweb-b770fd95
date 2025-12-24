@@ -1,10 +1,19 @@
 import { useState } from "react";
+import { z } from "zod";
 import { Mail, Phone, MapPin, MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email is too long"),
+  phone: z.string().trim().max(20, "Phone number is too long").optional().or(z.literal("")),
+  subject: z.string().trim().max(200, "Subject is too long").optional().or(z.literal("")),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000, "Message is too long"),
+});
 
 const contactCards = [
   {
@@ -38,15 +47,26 @@ export function ContactSection() {
     subject: "",
     message: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("contact_submissions").insert([formData]);
+      // Validate input
+      const validatedData = contactSchema.parse(formData);
+
+      const { error } = await supabase.from("contact_submissions").insert([{
+        name: validatedData.name,
+        email: validatedData.email,
+        phone: validatedData.phone || null,
+        subject: validatedData.subject || null,
+        message: validatedData.message,
+      }]);
 
       if (error) throw error;
 
@@ -57,11 +77,21 @@ export function ContactSection() {
 
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -130,8 +160,10 @@ export function ContactSection() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
+                    maxLength={100}
                     className="bg-secondary border-border"
                   />
+                  {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
@@ -143,8 +175,10 @@ export function ContactSection() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
+                    maxLength={255}
                     className="bg-secondary border-border"
                   />
+                  {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
                 </div>
               </div>
 
@@ -157,8 +191,10 @@ export function ContactSection() {
                     placeholder="+880 1234-567890"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    maxLength={20}
                     className="bg-secondary border-border"
                   />
+                  {errors.phone && <p className="text-destructive text-xs mt-1">{errors.phone}</p>}
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
@@ -168,8 +204,10 @@ export function ContactSection() {
                     placeholder="Project Inquiry"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    maxLength={200}
                     className="bg-secondary border-border"
                   />
+                  {errors.subject && <p className="text-destructive text-xs mt-1">{errors.subject}</p>}
                 </div>
               </div>
 
@@ -183,8 +221,11 @@ export function ContactSection() {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   rows={5}
+                  maxLength={2000}
                   className="bg-secondary border-border resize-none"
                 />
+                {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
+                <p className="text-xs text-muted-foreground mt-1">{formData.message.length}/2000 characters</p>
               </div>
 
               <Button
