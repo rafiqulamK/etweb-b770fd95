@@ -96,7 +96,6 @@ export default function About() {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 sm:mb-6">
                 Empowering Businesses Through Technology
               </h2>
-              </h2>
               <p className="text-muted-foreground mb-6">
                 At engineersTech, we believe in the transformative power of technology. 
                 Our mission is to help businesses of all sizes leverage cutting-edge 
