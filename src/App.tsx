@@ -12,6 +12,7 @@ import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import Portfolio from "./pages/Portfolio";
 import PortfolioDetail from "./pages/PortfolioDetail";
+import Demo from "./pages/Demo";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
@@ -20,6 +21,7 @@ import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/admin/Dashboard";
 import BlogManagement from "./pages/admin/BlogManagement";
 import PortfolioManagement from "./pages/admin/PortfolioManagement";
+import DemoManagement from "./pages/admin/DemoManagement";
 import TestimonialsManagement from "./pages/admin/TestimonialsManagement";
 import MessagesManagement from "./pages/admin/MessagesManagement";
 import SEOSettings from "./pages/admin/SEOSettings";
@@ -46,6 +48,7 @@ const App = () => (
               <Route path="/blog/:slug" element={<BlogDetail />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
+              <Route path="/demo" element={<Demo />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
@@ -56,6 +59,7 @@ const App = () => (
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/blog" element={<ProtectedRoute><BlogManagement /></ProtectedRoute>} />
               <Route path="/admin/portfolio" element={<ProtectedRoute><PortfolioManagement /></ProtectedRoute>} />
+              <Route path="/admin/demo" element={<ProtectedRoute><DemoManagement /></ProtectedRoute>} />
               <Route path="/admin/testimonials" element={<ProtectedRoute><TestimonialsManagement /></ProtectedRoute>} />
               <Route path="/admin/messages" element={<ProtectedRoute><MessagesManagement /></ProtectedRoute>} />
               <Route path="/admin/seo" element={<ProtectedRoute><SEOSettings /></ProtectedRoute>} />

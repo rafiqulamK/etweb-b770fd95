@@ -40,19 +40,19 @@ export default function Portfolio() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32 relative">
+      <section className="py-16 sm:py-20 md:py-32 relative">
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-glow opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-glow opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
               Our Portfolio
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
               Case Studies & <span className="text-gradient">Success Stories</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground px-2">
               Explore our completed projects and see how we've helped businesses 
               transform through innovative technology solutions.
             </p>
@@ -61,7 +61,7 @@ export default function Portfolio() {
       </section>
 
       {/* Portfolio Grid */}
-      <section className="py-20 bg-card">
+      <section className="py-12 sm:py-16 md:py-20 bg-card">
         <div className="container mx-auto px-4">
           {loading ? (
             <div className="text-center py-12">
@@ -77,7 +77,7 @@ export default function Portfolio() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {items.map((item) => (
                 <article
                   key={item.id}

@@ -39,19 +39,19 @@ export default function Blog() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32 relative">
+      <section className="py-16 sm:py-20 md:py-32 relative">
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-glow opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-glow opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
               Our Blog
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
               Insights & <span className="text-gradient">Updates</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground px-2">
               Stay updated with the latest trends in technology, software development, 
               and digital transformation.
             </p>
@@ -60,7 +60,7 @@ export default function Blog() {
       </section>
 
       {/* Blog Posts */}
-      <section className="py-20 bg-card">
+      <section className="py-12 sm:py-16 md:py-20 bg-card">
         <div className="container mx-auto px-4">
           {loading ? (
             <div className="text-center py-12">
@@ -76,7 +76,7 @@ export default function Blog() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {posts.map((post) => (
                 <article
                   key={post.id}

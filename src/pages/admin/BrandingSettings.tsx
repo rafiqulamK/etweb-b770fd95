@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { useBranding } from "@/hooks/useBranding";
 
 export default function BrandingSettings() {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function BrandingSettings() {
     whatsapp_number: "",
   });
   const { toast } = useToast();
+  const { refetch } = useBranding();
 
   useEffect(() => {
     fetchBranding();
@@ -40,8 +42,12 @@ export default function BrandingSettings() {
     e.preventDefault();
     setSaving(true);
     const { error } = await supabase.from("branding_settings").update(branding).eq("id", branding.id);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else toast({ title: "Saved", description: "Branding updated successfully" });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Saved", description: "Branding updated successfully" });
+      await refetch(); // Refresh branding across the app
+    }
     setSaving(false);
   };
 

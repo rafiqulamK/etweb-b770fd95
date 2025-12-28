@@ -37,6 +37,13 @@ const defaultBranding: BrandingData = {
   whatsapp_number: null,
 };
 
+// Helper to get value with fallback (treats empty string as null)
+const getWithFallback = <T,>(value: T | null | undefined, fallback: T): T => {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value === 'string' && value.trim() === '') return fallback;
+  return value;
+};
+
 const BrandingContext = createContext<BrandingContextType>({
   branding: defaultBranding,
   loading: true,

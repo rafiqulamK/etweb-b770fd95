@@ -12,20 +12,24 @@ import {
   X,
   Bot,
   Search,
+  Palette,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useBranding } from "@/hooks/useBranding";
 import { cn } from "@/lib/utils";
 
 const sidebarLinks = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/blog", icon: FileText, label: "Blog Posts" },
   { href: "/admin/portfolio", icon: Briefcase, label: "Case Studies" },
+  { href: "/admin/demo", icon: Play, label: "Demo Projects" },
   { href: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
   { href: "/admin/messages", icon: Mail, label: "Messages" },
   { href: "/admin/seo", icon: Search, label: "SEO Settings" },
   { href: "/admin/chatbot", icon: Bot, label: "Chatbot Config" },
-  { href: "/admin/branding", icon: Settings, label: "Branding" },
+  { href: "/admin/branding", icon: Palette, label: "Branding" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 
@@ -38,6 +42,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { branding } = useBranding();
+
+  const logoText = branding?.logo_text?.trim() || "engineersTech";
+  const logoUrl = branding?.logo_url?.trim() || null;
 
   const handleSignOut = async () => {
     await signOut();
@@ -57,11 +65,21 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           {/* Logo */}
           <div className="flex items-center justify-between p-4 border-b border-border">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">e</span>
-              </div>
-              <span className="text-lg font-bold text-foreground">
-                engineers<span className="text-gradient">Tech</span>
+              {logoUrl ? (
+                <img src={logoUrl} alt={logoText} className="w-10 h-10 rounded-lg object-contain" />
+              ) : (
+                <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-xl">e</span>
+                </div>
+              )}
+              <span className="text-lg font-bold text-foreground truncate max-w-[120px]">
+                {logoText.includes("Tech") ? (
+                  <>
+                    {logoText.replace("Tech", "")}<span className="text-gradient">Tech</span>
+                  </>
+                ) : (
+                  logoText
+                )}
               </span>
             </Link>
             <button
