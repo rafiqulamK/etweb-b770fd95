@@ -68,26 +68,26 @@ export default function Services() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32 relative">
+      <section className="py-16 sm:py-20 md:py-32 relative">
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-glow opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-glow opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
               Our Services
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
               Enterprise Solutions for <span className="text-gradient">Modern Business</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-2">
               From custom software development to AI integration, we provide comprehensive 
               technology solutions that drive growth and efficiency.
             </p>
             <Link to="/contact">
-              <Button variant="gradient" size="xl" className="gap-2">
+              <Button variant="gradient" size="lg" className="gap-2">
                 Get a Free Consultation
-                <ArrowRight size={20} />
+                <ArrowRight size={18} />
               </Button>
             </Link>
           </div>
@@ -95,14 +95,14 @@ export default function Services() {
       </section>
 
       {/* Services Detail */}
-      <section className="py-20 bg-card">
+      <section className="py-12 sm:py-16 md:py-20 bg-card">
         <div className="container mx-auto px-4">
-          <div className="space-y-24">
+          <div className="space-y-16 sm:space-y-20 md:space-y-24">
             {services.map((service, index) => (
               <div
                 key={service.id}
                 id={service.id}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center ${
                   index % 2 === 1 ? "lg:flex-row-reverse" : ""
                 }`}
               >

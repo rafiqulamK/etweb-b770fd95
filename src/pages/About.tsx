@@ -65,19 +65,19 @@ export default function About() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32 relative">
+      <section className="py-16 sm:py-20 md:py-32 relative">
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-glow opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-glow opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
               About Us
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
               Building the Future of <span className="text-gradient">Technology</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-2">
               engineersTech is a leading software development company based in Bangladesh, 
               dedicated to delivering innovative enterprise solutions that transform businesses.
             </p>
@@ -86,15 +86,16 @@ export default function About() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-card">
+      <section className="py-12 sm:py-16 md:py-20 bg-card">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
-              <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
+              <span className="text-primary text-sm font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
                 Our Mission
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 sm:mb-6">
                 Empowering Businesses Through Technology
+              </h2>
               </h2>
               <p className="text-muted-foreground mb-6">
                 At engineersTech, we believe in the transformative power of technology. 
