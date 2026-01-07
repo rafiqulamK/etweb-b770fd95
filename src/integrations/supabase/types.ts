@@ -185,6 +185,42 @@ export type Database = {
         }
         Relationships: []
       }
+      consultation_requests: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          interested_project: string | null
+          is_read: boolean | null
+          message: string | null
+          name: string
+          phone: string | null
+          source: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          interested_project?: string | null
+          is_read?: boolean | null
+          message?: string | null
+          name: string
+          phone?: string | null
+          source?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          interested_project?: string | null
+          is_read?: boolean | null
+          message?: string | null
+          name?: string
+          phone?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -220,11 +256,13 @@ export type Database = {
       }
       demo_projects: {
         Row: {
+          allow_interaction: boolean | null
           created_at: string
           demo_url: string | null
           description: string | null
           id: string
           is_featured: boolean
+          preview_mode: string | null
           project_type: string
           screenshots: string[] | null
           status: string
@@ -232,13 +270,16 @@ export type Database = {
           thumbnail: string | null
           title: string
           updated_at: string
+          view_count: number | null
         }
         Insert: {
+          allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null
           description?: string | null
           id?: string
           is_featured?: boolean
+          preview_mode?: string | null
           project_type?: string
           screenshots?: string[] | null
           status?: string
@@ -246,13 +287,16 @@ export type Database = {
           thumbnail?: string | null
           title: string
           updated_at?: string
+          view_count?: number | null
         }
         Update: {
+          allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null
           description?: string | null
           id?: string
           is_featured?: boolean
+          preview_mode?: string | null
           project_type?: string
           screenshots?: string[] | null
           status?: string
@@ -260,8 +304,59 @@ export type Database = {
           thumbnail?: string | null
           title?: string
           updated_at?: string
+          view_count?: number | null
         }
         Relationships: []
+      }
+      interaction_events: {
+        Row: {
+          created_at: string | null
+          element_id: string | null
+          element_type: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_path: string
+          project_id: string | null
+          session_id: string
+          x_position: number | null
+          y_position: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          element_id?: string | null
+          element_type?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_path: string
+          project_id?: string | null
+          session_id: string
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          element_id?: string | null
+          element_type?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string
+          project_id?: string | null
+          session_id?: string
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interaction_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "demo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -371,6 +466,42 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visitor_analytics: {
+        Row: {
+          click_count: number | null
+          created_at: string | null
+          device_type: string | null
+          id: string
+          page_path: string
+          referrer: string | null
+          scroll_depth: number | null
+          session_id: string
+          time_on_page: number | null
+        }
+        Insert: {
+          click_count?: number | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          page_path: string
+          referrer?: string | null
+          scroll_depth?: number | null
+          session_id: string
+          time_on_page?: number | null
+        }
+        Update: {
+          click_count?: number | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          page_path?: string
+          referrer?: string | null
+          scroll_depth?: number | null
+          session_id?: string
+          time_on_page?: number | null
         }
         Relationships: []
       }

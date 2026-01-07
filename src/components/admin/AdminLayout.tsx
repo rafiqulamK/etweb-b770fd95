@@ -14,6 +14,7 @@ import {
   Search,
   Palette,
   Play,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,6 +28,7 @@ const sidebarLinks = [
   { href: "/admin/demo", icon: Play, label: "Demo Projects" },
   { href: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
   { href: "/admin/messages", icon: Mail, label: "Messages" },
+  { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/admin/seo", icon: Search, label: "SEO Settings" },
   { href: "/admin/chatbot", icon: Bot, label: "Chatbot Config" },
   { href: "/admin/branding", icon: Palette, label: "Branding" },
