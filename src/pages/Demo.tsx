@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { ExternalLink, Monitor, Smartphone, Code2, Filter } from "lucide-react";
+import { Monitor, Smartphone, Code2, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { LivePreview } from "@/components/portfolio/LivePreview";
+import { PreviewModal } from "@/components/portfolio/PreviewModal";
+import { ConsultationPopup } from "@/components/consultation/ConsultationPopup";
 
 interface DemoProject {
   id: string;
@@ -14,6 +17,9 @@ interface DemoProject {
   thumbnail: string | null;
   technologies: string[] | null;
   is_featured: boolean;
+  preview_mode: string | null;
+  allow_interaction: boolean | null;
+  view_count: number | null;
 }
 
 const typeIcons: Record<string, typeof Monitor> = {
@@ -32,12 +38,15 @@ export default function Demo() {
   const [projects, setProjects] = useState<DemoProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+  const [selectedProject, setSelectedProject] = useState<DemoProject | null>(null);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProjects() {
       const { data, error } = await supabase
         .from("demo_projects")
-        .select("id, title, description, project_type, demo_url, thumbnail, technologies, is_featured")
+        .select("id, title, description, project_type, demo_url, thumbnail, technologies, is_featured, preview_mode, allow_interaction, view_count")
         .eq("status", "published")
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
@@ -56,6 +65,23 @@ export default function Demo() {
     : projects.filter(p => p.project_type === filter);
 
   const projectTypes = ["all", ...new Set(projects.map(p => p.project_type))];
+
+  const handleExpand = async (project: DemoProject) => {
+    setSelectedProject(project);
+    setIsPreviewModalOpen(true);
+    
+    // Increment view count
+    if (project.id) {
+      await supabase
+        .from("demo_projects")
+        .update({ view_count: (project.view_count || 0) + 1 })
+        .eq("id", project.id);
+    }
+  };
+
+  const handleConsultation = () => {
+    setIsConsultationOpen(true);
+  };
 
   return (
     <Layout>
@@ -121,18 +147,30 @@ export default function Demo() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {filteredProjects.map((project) => {
                 const TypeIcon = typeIcons[project.project_type] || Monitor;
+                const hasLivePreview = project.demo_url && project.preview_mode !== 'external';
+                
                 return (
                   <article
                     key={project.id}
-                    className={`bg-gradient-card rounded-2xl border overflow-hidden hover:border-primary/50 transition-all group ${
+                    className={`bg-gradient-card rounded-2xl border overflow-hidden hover:border-primary/50 transition-all ${
                       project.is_featured ? "border-primary/30" : "border-border/50"
                     }`}
                   >
-                    {project.thumbnail ? (
-                      <div className="aspect-video overflow-hidden relative">
+                    {/* Live Preview or Thumbnail */}
+                    {hasLivePreview ? (
+                      <LivePreview
+                        url={project.demo_url!}
+                        title={project.title}
+                        thumbnail={project.thumbnail || undefined}
+                        allowInteraction={project.allow_interaction ?? false}
+                        onExpand={() => handleExpand(project)}
+                        onView={() => {}}
+                      />
+                    ) : project.thumbnail ? (
+                      <div className="aspect-video overflow-hidden relative group">
                         <img
                           src={project.thumbnail}
                           alt={project.title}
@@ -142,6 +180,17 @@ export default function Demo() {
                           <span className="absolute top-3 left-3 px-2 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
                             Featured
                           </span>
+                        )}
+                        {project.demo_url && (
+                          <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <Button
+                              size="sm"
+                              variant="gradient"
+                              onClick={() => handleExpand(project)}
+                            >
+                              View Demo
+                            </Button>
+                          </div>
                         )}
                       </div>
                     ) : (
@@ -156,16 +205,23 @@ export default function Demo() {
                     )}
                     
                     <div className="p-4 sm:p-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-                          <TypeIcon size={16} className="text-primary" />
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
+                            <TypeIcon size={16} className="text-primary" />
+                          </div>
+                          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                            {typeLabels[project.project_type] || project.project_type}
+                          </span>
                         </div>
-                        <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                          {typeLabels[project.project_type] || project.project_type}
-                        </span>
+                        {project.view_count !== null && project.view_count > 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            {project.view_count} views
+                          </span>
+                        )}
                       </div>
                       
-                      <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2 line-clamp-2">
                         {project.title}
                       </h2>
                       
@@ -193,19 +249,25 @@ export default function Demo() {
                         </div>
                       )}
                       
-                      {project.demo_url ? (
-                        <a
-                          href={project.demo_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-primary font-medium hover:underline text-sm"
+                      <div className="flex items-center gap-2">
+                        {project.demo_url && (
+                          <Button
+                            size="sm"
+                            variant="gradient"
+                            onClick={() => handleExpand(project)}
+                            className="flex-1"
+                          >
+                            View Demo
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleConsultation}
                         >
-                          View Live Demo
-                          <ExternalLink size={14} />
-                        </a>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Demo coming soon</span>
-                      )}
+                          Get Quote
+                        </Button>
+                      </div>
                     </div>
                   </article>
                 );
@@ -226,15 +288,32 @@ export default function Demo() {
             <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
               Schedule a personalized demonstration tailored to your specific requirements.
             </p>
-            <Link to="/contact">
-              <Button variant="gradient" size="lg" className="gap-2">
-                Schedule Demo
-                <ExternalLink size={18} />
-              </Button>
-            </Link>
+            <Button variant="gradient" size="lg" className="gap-2" onClick={handleConsultation}>
+              Schedule Demo
+            </Button>
           </div>
         </div>
       </section>
+
+      {/* Preview Modal */}
+      {selectedProject && (
+        <PreviewModal
+          isOpen={isPreviewModalOpen}
+          onClose={() => setIsPreviewModalOpen(false)}
+          url={selectedProject.demo_url || ""}
+          title={selectedProject.title}
+          projectId={selectedProject.id}
+          onConsultation={handleConsultation}
+        />
+      )}
+
+      {/* Consultation Popup */}
+      <ConsultationPopup
+        isOpen={isConsultationOpen}
+        onClose={() => setIsConsultationOpen(false)}
+        projectContext={selectedProject?.title}
+        source="demo"
+      />
     </Layout>
   );
 }

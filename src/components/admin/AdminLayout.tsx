@@ -28,6 +28,7 @@ const sidebarLinks = [
   { href: "/admin/demo", icon: Play, label: "Demo Projects" },
   { href: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
   { href: "/admin/messages", icon: Mail, label: "Messages" },
+  { href: "/admin/consultations", icon: MessageSquare, label: "Consultations" },
   { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/admin/seo", icon: Search, label: "SEO Settings" },
   { href: "/admin/chatbot", icon: Bot, label: "Chatbot Config" },

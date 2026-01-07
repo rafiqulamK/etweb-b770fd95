@@ -7,13 +7,6 @@ on:
 
 env:
   NODE_VERSION: '20'
-  # Database Configuration (referenced from secrets)
-  DB_CONNECTION: mysql
-  DB_HOST: ${{ secrets.DB_HOST }}
-  DB_PORT: 3306
-  DB_DATABASE: ${{ secrets.DB_DATABASE }}
-  DB_USERNAME: ${{ secrets.DB_USERNAME }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
   build:
@@ -134,11 +127,8 @@ jobs:
           echo "7. Delete the ZIP file after extraction"
           echo "=============================================="
           echo ""
-          echo "📊 DATABASE CONFIGURATION:"
+          echo "📊 BACKEND: Lovable Cloud (Supabase)"
           echo "=============================================="
-          echo "DB_CONNECTION: mysql"
-          echo "DB_HOST: 127.0.0.1"
-          echo "DB_PORT: 3306"
-          echo "DB_DATABASE: (from secrets)"
-          echo "DB_USERNAME: (from secrets)"
+          echo "Database and authentication are managed via Lovable Cloud."
+          echo "No additional database configuration required."
           echo "=============================================="

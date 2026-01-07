@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { PreviewModal } from "@/components/portfolio/PreviewModal";
+import { ConsultationPopup } from "@/components/consultation/ConsultationPopup";
 
 interface CaseStudy {
   id: string;
@@ -19,6 +21,9 @@ interface CaseStudy {
 export default function Portfolio() {
   const [items, setItems] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<CaseStudy | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
 
   useEffect(() => {
     async function fetchItems() {
@@ -36,6 +41,15 @@ export default function Portfolio() {
 
     fetchItems();
   }, []);
+
+  const handlePreview = (item: CaseStudy) => {
+    setSelectedItem(item);
+    setIsPreviewOpen(true);
+  };
+
+  const handleConsultation = () => {
+    setIsConsultationOpen(true);
+  };
 
   return (
     <Layout>
@@ -84,12 +98,23 @@ export default function Portfolio() {
                   className="bg-gradient-card rounded-2xl border border-border/50 overflow-hidden hover:border-primary/50 transition-all group"
                 >
                   {item.featured_image ? (
-                    <div className="aspect-video overflow-hidden">
+                    <div className="aspect-video overflow-hidden relative">
                       <img
                         src={item.featured_image}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handlePreview(item)}
+                          className="gap-1"
+                        >
+                          <Eye size={14} />
+                          Preview
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
@@ -129,13 +154,22 @@ export default function Portfolio() {
                         </p>
                       </div>
                     )}
-                    <Link
-                      to={`/portfolio/${item.slug}`}
-                      className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
-                    >
-                      View Case Study
-                      <ExternalLink size={14} />
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        to={`/portfolio/${item.slug}`}
+                        className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
+                      >
+                        View Case Study
+                        <ExternalLink size={14} />
+                      </Link>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleConsultation}
+                      >
+                        Get Quote
+                      </Button>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -155,15 +189,33 @@ export default function Portfolio() {
             <p className="text-muted-foreground mb-8">
               Let's discuss how we can help bring your vision to life with our expertise.
             </p>
-            <Link to="/contact">
-              <Button variant="gradient" size="lg" className="gap-2">
-                Start Your Project
-                <ArrowRight size={18} />
-              </Button>
-            </Link>
+            <Button variant="gradient" size="lg" className="gap-2" onClick={handleConsultation}>
+              Start Your Project
+              <ArrowRight size={18} />
+            </Button>
           </div>
         </div>
       </section>
+
+      {/* Preview Modal - Using featured_image as a static preview since case studies don't have demo_url */}
+      {selectedItem && selectedItem.featured_image && (
+        <PreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          url={selectedItem.featured_image}
+          title={selectedItem.title}
+          projectId={selectedItem.id}
+          onConsultation={handleConsultation}
+        />
+      )}
+
+      {/* Consultation Popup */}
+      <ConsultationPopup
+        isOpen={isConsultationOpen}
+        onClose={() => setIsConsultationOpen(false)}
+        projectContext={selectedItem?.title}
+        source="portfolio"
+      />
     </Layout>
   );
 }

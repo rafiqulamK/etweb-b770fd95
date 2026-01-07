@@ -10,7 +10,9 @@ import { CookieConsent } from "@/components/gdpr/CookieConsent";
 import { WhatsAppButton } from "@/components/consultation/WhatsAppButton";
 import { InteractionTracker } from "@/components/analytics/InteractionTracker";
 import Analytics from "./pages/admin/Analytics";
+import ConsultationManagement from "./pages/admin/ConsultationManagement";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ConsultationTrigger } from "@/components/consultation/ConsultationTrigger";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
 import Blog from "./pages/Blog";
@@ -73,12 +75,14 @@ const App = () => (
               <Route path="/admin/chatbot" element={<ProtectedRoute><ChatbotConfig /></ProtectedRoute>} />
               <Route path="/admin/branding" element={<ProtectedRoute><BrandingSettings /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/admin/consultations" element={<ProtectedRoute><ConsultationManagement /></ProtectedRoute>} />
               <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
               
               <Route path="*" element={<NotFound />} />
                 </Routes>
                 <WhatsAppButton />
                 <CookieConsent />
+                <ConsultationTrigger />
               </InteractionTracker>
             </BrowserRouter>
           </TooltipProvider>
