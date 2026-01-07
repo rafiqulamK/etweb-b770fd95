@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { BrandingProvider } from "@/hooks/useBranding";
+import { ConsentProvider } from "@/hooks/useConsent";
+import { CookieConsent } from "@/components/gdpr/CookieConsent";
+import { WhatsAppButton } from "@/components/consultation/WhatsAppButton";
+import { InteractionTracker } from "@/components/analytics/InteractionTracker";
+import Analytics from "./pages/admin/Analytics";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
@@ -36,11 +41,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <BrandingProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
+        <ConsentProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <InteractionTracker>
+                <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
@@ -65,12 +72,17 @@ const App = () => (
               <Route path="/admin/seo" element={<ProtectedRoute><SEOSettings /></ProtectedRoute>} />
               <Route path="/admin/chatbot" element={<ProtectedRoute><ChatbotConfig /></ProtectedRoute>} />
               <Route path="/admin/branding" element={<ProtectedRoute><BrandingSettings /></ProtectedRoute>} />
+              <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
               
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+                </Routes>
+                <WhatsAppButton />
+                <CookieConsent />
+              </InteractionTracker>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ConsentProvider>
       </BrandingProvider>
     </AuthProvider>
   </QueryClientProvider>
