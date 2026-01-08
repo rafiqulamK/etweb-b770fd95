@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { Monitor, Smartphone, Code2, Filter } from "lucide-react";
+import { Monitor, Smartphone, Code2, Filter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { LivePreview } from "@/components/portfolio/LivePreview";
 import { PreviewModal } from "@/components/portfolio/PreviewModal";
@@ -35,9 +36,11 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function Demo() {
+  const [searchParams] = useSearchParams();
   const [projects, setProjects] = useState<DemoProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<DemoProject | null>(null);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
@@ -53,16 +56,40 @@ export default function Demo() {
 
       if (!error && data) {
         setProjects(data);
+        
+        // Check if a project is requested via URL params (masked URL support)
+        const projectParam = searchParams.get("project");
+        const idParam = searchParams.get("id");
+        
+        if (projectParam || idParam) {
+          const matchedProject = data.find(p => {
+            if (idParam && p.id.startsWith(idParam)) return true;
+            if (projectParam) {
+              const maskedTitle = p.title.toLowerCase().replace(/\s+/g, '-');
+              return maskedTitle === projectParam.toLowerCase();
+            }
+            return false;
+          });
+          
+          if (matchedProject) {
+            handleExpand(matchedProject);
+          }
+        }
       }
       setLoading(false);
     }
 
     fetchProjects();
-  }, []);
+  }, [searchParams]);
 
-  const filteredProjects = filter === "all" 
-    ? projects 
-    : projects.filter(p => p.project_type === filter);
+  // Filter by type and search query
+  const filteredProjects = projects.filter(p => {
+    const matchesType = filter === "all" || p.project_type === filter;
+    const matchesSearch = !searchQuery || 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesType && matchesSearch;
+  });
 
   const projectTypes = ["all", ...new Set(projects.map(p => p.project_type))];
 
@@ -106,9 +133,22 @@ export default function Demo() {
         </div>
       </section>
 
-      {/* Filter & Projects */}
+      {/* Search & Filter Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-card">
         <div className="container mx-auto px-4">
+          {/* Search Bar */}
+          <div className="max-w-xl mx-auto mb-8">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search demos by name or description..."
+                className="pl-10 bg-secondary border-border"
+              />
+            </div>
+          </div>
+
           {/* Filter Buttons */}
           {projects.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
@@ -131,20 +171,28 @@ export default function Demo() {
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading demos...</p>
             </div>
-          ) : projects.length === 0 ? (
+          ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12 max-w-md mx-auto">
               <div className="w-20 h-20 mx-auto rounded-full bg-gradient-primary flex items-center justify-center mb-6">
                 <Monitor size={40} className="text-primary-foreground" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
-                Demos Coming Soon
+                {searchQuery ? "No Matching Demos" : "Demos Coming Soon"}
               </h3>
               <p className="text-muted-foreground mb-6">
-                We're preparing live demos of our projects. Check back soon or contact us for a personalized demo.
+                {searchQuery 
+                  ? "Try adjusting your search or browse all demos."
+                  : "We're preparing live demos of our projects. Check back soon or contact us for a personalized demo."}
               </p>
-              <Link to="/contact">
-                <Button variant="gradient">Request a Demo</Button>
-              </Link>
+              {searchQuery ? (
+                <Button variant="outline" onClick={() => setSearchQuery("")}>
+                  Clear Search
+                </Button>
+              ) : (
+                <Link to="/contact">
+                  <Button variant="gradient">Request a Demo</Button>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

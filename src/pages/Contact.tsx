@@ -1,15 +1,23 @@
 import { Layout } from "@/components/layout/Layout";
 import { ContactSection } from "@/components/home/ContactSection";
 import { MapPin, Clock, Phone, Mail } from "lucide-react";
-
-const contactDetails = [
-  { icon: MapPin, title: "Visit Us", value: "Dhaka, Bangladesh" },
-  { icon: Clock, title: "Business Hours", value: "Sun - Thu: 9AM - 6PM" },
-  { icon: Phone, title: "Call Us", value: "+880 1234-567890" },
-  { icon: Mail, title: "Email Us", value: "info@engineerstechbd.com" },
-];
+import { useBranding } from "@/hooks/useBranding";
 
 export default function Contact() {
+  const { branding } = useBranding();
+
+  // Get contact info from branding
+  const email = branding?.company_email || "info@engineerstechbd.com";
+  const phone = branding?.company_phone || "+880 1873-722228";
+  const address = branding?.company_address || "Dhaka, Bangladesh";
+
+  const contactDetails = [
+    { icon: MapPin, title: "Visit Us", value: address },
+    { icon: Clock, title: "Business Hours", value: "Sun - Thu: 9AM - 6PM" },
+    { icon: Phone, title: "Call Us", value: phone },
+    { icon: Mail, title: "Email Us", value: email },
+  ];
+
   return (
     <Layout>
       {/* Hero Section */}
