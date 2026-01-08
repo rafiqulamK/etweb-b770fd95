@@ -185,6 +185,33 @@ DB migration notes:
 - Add `fingerprint` (text) to `visitor_analytics` and `interaction_events` tables.
 - Optionally add a `category` column to `interaction_events` for categorized event reports.
 
+Migration file included:
+
+- `supabase/migrations/20260108_add_fingerprint_category.sql` — adds `fingerprint` to `visitor_analytics` and `interaction_events`, adds `category` to `interaction_events`, and creates indexes.
+
+How to apply the migration:
+
+1. Using Supabase SQL Editor: open the Supabase project -> SQL Editor -> New query, paste the SQL from the migration file and run.
+2. Using psql (example):
+
+```bash
+# Export connection string first (from Supabase project settings)
+export DATABASE_URL="postgresql://<user>:<pass>@<host>:5432/<db>"
+psql "$DATABASE_URL" -f supabase/migrations/20260108_add_fingerprint_category.sql
+```
+
+3. Using Supabase CLI (if configured):
+
+```bash
+supabase db remote set <YOUR_CONNECTION_STRING>
+psql "$SUPABASE_REMOTE_URL" -f supabase/migrations/20260108_add_fingerprint_category.sql
+```
+
+Notes:
+- Run migrations in a maintenance window for production environments.
+- Backup the database before applying schema changes.
+- After applying, verify data and update any RLS policies if needed to account for the new columns.
+
 CI & PR checklist:
 - Run `npm ci` and `npm run build` in CI.
 - Run `npx update-browserslist-db@latest` before the build to keep caniuse-lite current (workflow step added).
