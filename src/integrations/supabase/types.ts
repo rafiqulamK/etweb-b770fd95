@@ -256,6 +256,10 @@ export type Database = {
       }
       demo_projects: {
         Row: {
+          access_code: string | null
+          access_notes: string | null
+          access_password: string | null
+          access_username: string | null
           allow_interaction: boolean | null
           created_at: string
           demo_url: string | null
@@ -273,6 +277,10 @@ export type Database = {
           view_count: number | null
         }
         Insert: {
+          access_code?: string | null
+          access_notes?: string | null
+          access_password?: string | null
+          access_username?: string | null
           allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null
@@ -290,6 +298,10 @@ export type Database = {
           view_count?: number | null
         }
         Update: {
+          access_code?: string | null
+          access_notes?: string | null
+          access_password?: string | null
+          access_username?: string | null
           allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null

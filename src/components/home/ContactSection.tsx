@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useBranding } from "@/hooks/useBranding";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
@@ -15,31 +16,8 @@ const contactSchema = z.object({
   message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000, "Message is too long"),
 });
 
-const contactCards = [
-  {
-    icon: Mail,
-    title: "Email Us",
-    value: "info@engineerstechbd.com",
-    href: "mailto:info@engineerstechbd.com",
-    color: "from-green-500 to-teal-500",
-  },
-  {
-    icon: Phone,
-    title: "WhatsApp",
-    value: "+880 1234-567890",
-    href: "https://wa.me/8801234567890",
-    color: "from-teal-500 to-cyan-500",
-  },
-  {
-    icon: MapPin,
-    title: "Location",
-    value: "Dhaka, Bangladesh",
-    href: "https://maps.google.com",
-    color: "from-cyan-500 to-blue-500",
-  },
-];
-
 export function ContactSection() {
+  const { branding } = useBranding();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -51,13 +29,43 @@ export function ContactSection() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  // Get contact info from branding
+  const email = branding?.company_email || "info@engineerstechbd.com";
+  const phone = branding?.company_phone || "+880 1873-722228";
+  const address = branding?.company_address || "Dhaka, Bangladesh";
+  const whatsappNumber = branding?.whatsapp_number || "+880 1873-722228";
+  const cleanWhatsapp = whatsappNumber.replace(/[^0-9]/g, "");
+
+  const contactCards = [
+    {
+      icon: Mail,
+      title: "Email Us",
+      value: email,
+      href: `mailto:${email}`,
+      color: "from-green-500 to-teal-500",
+    },
+    {
+      icon: Phone,
+      title: "WhatsApp",
+      value: phone,
+      href: `https://wa.me/${cleanWhatsapp}`,
+      color: "from-teal-500 to-cyan-500",
+    },
+    {
+      icon: MapPin,
+      title: "Location",
+      value: address,
+      href: `https://maps.google.com/?q=${encodeURIComponent(address)}`,
+      color: "from-cyan-500 to-blue-500",
+    },
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
     setLoading(true);
 
     try {
-      // Validate input
       const validatedData = contactSchema.parse(formData);
 
       const { error } = await supabase.from("contact_submissions").insert([{
@@ -188,7 +196,7 @@ export function ContactSection() {
                     Phone Number
                   </label>
                   <Input
-                    placeholder="+880 1234-567890"
+                    placeholder={phone}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     maxLength={20}
