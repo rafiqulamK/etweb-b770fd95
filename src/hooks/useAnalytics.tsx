@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useConsent } from "@/hooks/useConsent";
 
 const SESSION_KEY = "analytics_session_id";
+const FINGERPRINT_KEY = "analytics_fingerprint";
 
 function generateSessionId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -25,6 +26,37 @@ function getDeviceType(): string {
   return "desktop";
 }
 
+// Simple fingerprint generator using basic client signals
+function generateFingerprint(): string {
+  try {
+    const ua = navigator.userAgent || "";
+    const lang = navigator.language || "";
+    const platform = navigator.platform || "";
+    const screenInfo = `${screen.width}x${screen.height}@${screen.colorDepth}`;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || String(new Date().getTimezoneOffset());
+    const raw = `${ua}::${lang}::${platform}::${screenInfo}::${tz}`;
+
+    // djb2 hash
+    let hash = 5381;
+    for (let i = 0; i < raw.length; i++) {
+      hash = (hash * 33) ^ raw.charCodeAt(i);
+    }
+    // Convert to positive hex
+    return (hash >>> 0).toString(16);
+  } catch (e) {
+    return Math.random().toString(36).slice(2, 10);
+  }
+}
+
+function getFingerprint(): string {
+  let fp = localStorage.getItem(FINGERPRINT_KEY);
+  if (!fp) {
+    fp = generateFingerprint();
+    localStorage.setItem(FINGERPRINT_KEY, fp);
+  }
+  return fp;
+}
+
 interface InteractionEvent {
   event_type: string;
   element_id?: string;
@@ -40,6 +72,7 @@ export function useAnalytics() {
   const location = useLocation();
   const { hasConsent } = useConsent();
   const sessionId = useRef(getSessionId());
+  const fingerprint = useRef(getFingerprint());
   const pageStartTime = useRef(Date.now());
   const maxScrollDepth = useRef(0);
   const clickCount = useRef(0);
@@ -59,6 +92,7 @@ export function useAnalytics() {
       await supabase.from("interaction_events").insert(
         events.map((event) => ({
           session_id: sessionId.current,
+          fingerprint: fingerprint.current,
           ...event,
         }))
       );
@@ -93,6 +127,7 @@ export function useAnalytics() {
     try {
       await supabase.from("visitor_analytics").insert({
         session_id: sessionId.current,
+        fingerprint: fingerprint.current,
         page_path: location.pathname,
         device_type: getDeviceType(),
         referrer: document.referrer || null,
@@ -189,5 +224,6 @@ export function useAnalytics() {
     trackProjectView,
     trackClick,
     sessionId: sessionId.current,
+    fingerprint: fingerprint.current,
   };
 }

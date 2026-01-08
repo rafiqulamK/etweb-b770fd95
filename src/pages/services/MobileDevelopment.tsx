@@ -88,7 +88,6 @@ export default function MobileDevelopment() {
         description="Professional mobile app development services in Bangladesh. Build native iOS, Android, and cross-platform apps with React Native and Flutter. Get your app to market faster."
         keywords={["mobile app development Bangladesh", "iOS app development", "Android app development", "React Native development", "Flutter app development", "cross-platform mobile apps"]}
         canonical="/services/mobile-development"
-        schemaType="Service"
       />
 
       {/* Hero Section */}

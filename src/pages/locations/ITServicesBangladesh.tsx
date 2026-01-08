@@ -86,7 +86,6 @@ export default function ITServicesBangladesh() {
         description="Leading IT services provider in Bangladesh offering custom software development, web applications, mobile apps, ERP, CRM, and AI solutions. Cost-effective offshore development with quality assurance."
         keywords={["IT services Bangladesh", "software company Bangladesh", "offshore development Bangladesh", "IT outsourcing Bangladesh", "software development company"]}
         canonical="/locations/it-services-bangladesh"
-        schemaType="LocalBusiness"
       />
 
       {/* Hero Section */}

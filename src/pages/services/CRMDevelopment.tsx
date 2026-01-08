@@ -77,7 +77,6 @@ export default function CRMDevelopment() {
         description="Custom CRM development services in Bangladesh. Build powerful customer relationship management systems with sales automation, marketing tools, and analytics."
         keywords={["CRM software Bangladesh", "customer management system", "sales CRM development", "customer relationship management", "CRM integration services"]}
         canonical="/services/crm-development"
-        schemaType="Service"
       />
 
       {/* Hero Section */}

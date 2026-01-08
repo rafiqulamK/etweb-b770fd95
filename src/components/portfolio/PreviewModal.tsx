@@ -242,6 +242,8 @@ export function PreviewModal({
                 title={title}
                 className="w-full h-full border-0"
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                referrerPolicy="no-referrer"
+                loading="lazy"
                 onLoad={() => setIsLoading(false)}
               />
             </div>

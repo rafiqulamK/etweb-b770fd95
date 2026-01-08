@@ -26,7 +26,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-      <div className="container mx-auto px-3 sm:px-4">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 min-w-0 flex-shrink-0">
@@ -82,7 +82,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-foreground"
+            className="lg:hidden p-3 text-foreground rounded-md hover:bg-secondary/20 focus:outline-none focus:ring-2 focus:ring-primary"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -92,14 +92,14 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="lg:hidden py-3 border-t border-border/50 animate-fade-in max-h-[70vh] overflow-y-auto">
+          <nav className="lg:hidden py-4 border-t border-border/50 animate-fade-in max-h-[60vh] overflow-y-auto">
             <div className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   className={cn(
-                    "text-base font-medium transition-colors hover:text-primary py-3 px-2 rounded-lg",
+                    "text-base font-medium transition-colors hover:text-primary py-4 px-3 rounded-lg",
                     location.pathname === link.href
                       ? "text-primary bg-primary/10"
                       : "text-muted-foreground hover:bg-secondary"

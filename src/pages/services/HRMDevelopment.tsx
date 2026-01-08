@@ -77,7 +77,6 @@ export default function HRMDevelopment() {
         description="Custom HRM software development services in Bangladesh. Build powerful HR management systems with payroll, attendance, leave management, and performance tracking."
         keywords={["HRM software Bangladesh", "HR management system", "payroll software development", "attendance management system", "employee management software"]}
         canonical="/services/hrm-development"
-        schemaType="Service"
       />
 
       {/* Hero Section */}

@@ -22,6 +22,10 @@ import PortfolioDetail from "./pages/PortfolioDetail";
 import Demo from "./pages/Demo";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import HRMDevelopment from "./pages/services/HRMDevelopment";
+import CRMDevelopment from "./pages/services/CRMDevelopment";
+import MobileDevelopment from "./pages/services/MobileDevelopment";
+import ITServicesBangladesh from "./pages/locations/ITServicesBangladesh";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Auth from "./pages/Auth";
@@ -53,6 +57,10 @@ const App = () => (
               {/* Public Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/hrm-development" element={<HRMDevelopment />} />
+              <Route path="/services/crm-development" element={<CRMDevelopment />} />
+              <Route path="/services/mobile-development" element={<MobileDevelopment />} />
+              <Route path="/locations/it-services-bangladesh" element={<ITServicesBangladesh />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
               <Route path="/portfolio" element={<Portfolio />} />

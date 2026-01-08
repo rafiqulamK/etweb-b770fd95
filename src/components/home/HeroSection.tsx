@@ -103,7 +103,7 @@ export function HeroSection() {
 
           {/* Stats */}
           <div 
-            className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto animate-fade-in"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto animate-fade-in"
             style={{ animationDelay: "0.4s" }}
           >
             {stats.map((stat, index) => (

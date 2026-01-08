@@ -61,6 +61,8 @@ export default function Analytics() {
 
       // Process analytics data
       const uniqueSessions = new Set(analytics?.map((a) => a.session_id)).size;
+      // Unique fingerprints (approximate unique visitors)
+      const uniqueFingerprints = new Set(analytics?.map((a) => a.fingerprint)).size;
       const totalPageViews = analytics?.length || 0;
       
       const timeOnPage = analytics?.filter((a) => a.time_on_page > 0) || [];
@@ -99,6 +101,25 @@ export default function Analytics() {
         created_at: e.created_at,
       }));
 
+      // Categorized report: top event types and categories
+      const eventTypeCounts: Record<string, number> = {};
+      const categoryCounts: Record<string, number> = {};
+      (events || []).forEach((ev: any) => {
+        eventTypeCounts[ev.event_type] = (eventTypeCounts[ev.event_type] || 0) + 1;
+        const cat = ev.metadata?.category || ev.category || "uncategorized";
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
+
+      const topEventTypes = Object.entries(eventTypeCounts)
+        .map(([event_type, count]) => ({ event_type, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+      const topCategories = Object.entries(categoryCounts)
+        .map(([category, count]) => ({ category, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
       setData({
         totalPageViews,
         uniqueSessions,
@@ -107,6 +128,10 @@ export default function Analytics() {
         deviceBreakdown,
         topPages,
         recentEvents,
+        // attach new report fields
+        topEventTypes,
+        topCategories,
+        uniqueFingerprints: uniqueFingerprints || 0,
       });
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
@@ -127,6 +152,12 @@ export default function Analytics() {
       value: data?.uniqueSessions || 0,
       icon: Users,
       color: "text-green-500",
+    },
+    {
+      label: "Unique Visitors",
+      value: (data as any)?.uniqueFingerprints || 0,
+      icon: Users,
+      color: "text-teal-500",
     },
     {
       label: "Avg. Time on Page",
