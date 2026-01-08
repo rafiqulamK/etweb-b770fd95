@@ -104,6 +104,28 @@ jobs:
           echo "📦 Created deploy-package.zip"
           ls -lh deploy-package.zip
 
+      - name: 🗂️ Create cPanel deploy ZIP (dist + PHP backend)
+        run: |
+          TMPDIR=$(mktemp -d)
+          mkdir -p "$TMPDIR/public_html"
+          # Copy dist contents
+          cp -r dist/* "$TMPDIR/public_html/"
+          # Copy PHP backend files into root (so /api/contact.php exists)
+          cp -r deploy/cpanel/* "$TMPDIR/public_html/"
+          # Create ZIP
+          cd "$TMPDIR"
+          zip -r "$GITHUB_WORKSPACE/deploy-cpanel.zip" public_html
+          cd "$GITHUB_WORKSPACE"
+          echo "📦 Created deploy-cpanel.zip"
+          ls -lh deploy-cpanel.zip
+
+      - name: 📤 Upload cPanel deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-cpanel
+          path: deploy-cpanel.zip
+          retention-days: 30
+
       - name: 📤 Upload deployment package
         uses: actions/upload-artifact@v4
         with:

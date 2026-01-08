@@ -68,15 +68,33 @@ export function ContactSection() {
     try {
       const validatedData = contactSchema.parse(formData);
 
-      const { error } = await supabase.from("contact_submissions").insert([{
-        name: validatedData.name,
-        email: validatedData.email,
-        phone: validatedData.phone || null,
-        subject: validatedData.subject || null,
-        message: validatedData.message,
-      }]);
+      // If VITE_USE_PHP_API is set, post to PHP endpoint instead of Supabase
+      const usePhp = import.meta.env.VITE_USE_PHP_API === 'true' || import.meta.env.VITE_USE_PHP_API === true;
+      if (usePhp) {
+        const res = await fetch('/api/contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: validatedData.name,
+            email: validatedData.email,
+            phone: validatedData.phone || null,
+            subject: validatedData.subject || null,
+            message: validatedData.message,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok || json.error) throw new Error(json.error || 'Contact API error');
+      } else {
+        const { error } = await supabase.from("contact_submissions").insert([{
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone || null,
+          subject: validatedData.subject || null,
+          message: validatedData.message,
+        }]);
 
-      if (error) throw error;
+        if (error) throw error;
+      }
 
       toast({
         title: "Message sent!",
