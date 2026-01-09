@@ -37,7 +37,7 @@ export function Header() {
                 <span className="text-primary-foreground font-bold text-lg sm:text-xl">e</span>
               </div>
             )}
-            <span className="text-base sm:text-xl font-bold text-foreground truncate max-w-[100px] sm:max-w-[150px] md:max-w-none">
+            <span className="text-base sm:text-xl font-bold text-foreground whitespace-nowrap">
               {logoText.includes("Tech") ? (
                 <>
                   {logoText.replace("Tech", "")}<span className="text-gradient">Tech</span>
@@ -68,11 +68,6 @@ export function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-4">
-            <Link to="/auth">
-              <Button variant="outline" size="sm">
-                Admin
-              </Button>
-            </Link>
             <Link to="/contact">
               <Button variant="gradient" size="sm">
                 Get Started
@@ -110,11 +105,6 @@ export function Header() {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-border/50">
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full h-11">
-                    Admin Login
-                  </Button>
-                </Link>
                 <Link to="/contact" onClick={() => setIsOpen(false)}>
                   <Button variant="gradient" className="w-full h-11">
                     Get Started
