@@ -22,10 +22,15 @@ import PortfolioDetail from "./pages/PortfolioDetail";
 import Demo from "./pages/Demo";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import ERPDevelopment from "./pages/services/ERPDevelopment";
 import HRMDevelopment from "./pages/services/HRMDevelopment";
 import CRMDevelopment from "./pages/services/CRMDevelopment";
+import AIIntegration from "./pages/services/AIIntegration";
+import WebDevelopment from "./pages/services/WebDevelopment";
 import MobileDevelopment from "./pages/services/MobileDevelopment";
+import SoftwareCompanyDhaka from "./pages/locations/SoftwareCompanyDhaka";
 import ITServicesBangladesh from "./pages/locations/ITServicesBangladesh";
+import SEODashboard from "./pages/admin/SEODashboard";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Auth from "./pages/Auth";
@@ -57,9 +62,13 @@ const App = () => (
               {/* Public Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/erp-development" element={<ERPDevelopment />} />
               <Route path="/services/hrm-development" element={<HRMDevelopment />} />
               <Route path="/services/crm-development" element={<CRMDevelopment />} />
+              <Route path="/services/ai-integration" element={<AIIntegration />} />
+              <Route path="/services/web-development" element={<WebDevelopment />} />
               <Route path="/services/mobile-development" element={<MobileDevelopment />} />
+              <Route path="/locations/software-company-dhaka" element={<SoftwareCompanyDhaka />} />
               <Route path="/locations/it-services-bangladesh" element={<ITServicesBangladesh />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
@@ -80,6 +89,7 @@ const App = () => (
               <Route path="/admin/testimonials" element={<ProtectedRoute><TestimonialsManagement /></ProtectedRoute>} />
               <Route path="/admin/messages" element={<ProtectedRoute><MessagesManagement /></ProtectedRoute>} />
               <Route path="/admin/seo" element={<ProtectedRoute><SEOSettings /></ProtectedRoute>} />
+              <Route path="/admin/seo-dashboard" element={<ProtectedRoute><SEODashboard /></ProtectedRoute>} />
               <Route path="/admin/chatbot" element={<ProtectedRoute><ChatbotConfig /></ProtectedRoute>} />
               <Route path="/admin/branding" element={<ProtectedRoute><BrandingSettings /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
