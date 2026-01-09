@@ -1,79 +1,78 @@
-# engineersTech - Enterprise Tech Solutions
+# engineersTech - Enterprise Software Solutions
 
-A modern, full-stack web application built with React, TypeScript, and Lovable Cloud. This project features a complete CMS with admin dashboard, blog management, portfolio showcase, live demos, visitor analytics, consultation system, and AI-powered chatbot.
+A modern, full-stack web application for engineersTech BD - Bangladesh's leading software development company. Built with React, TypeScript, and Lovable Cloud featuring AI-powered SEO, live demo management, and comprehensive admin dashboard.
+
+**Live Site**: [engineerstechbd.com](https://engineerstechbd.com)
+
+---
 
 ## 🚀 Features
 
-### Core Features
-- **Dynamic Branding**: Update logo, colors, and company info from admin panel
-- **Blog Management**: Full CRUD with featured images, SEO, and related posts
-- **Portfolio/Case Studies**: Showcase projects with image galleries and live previews
-- **Demo Projects**: Interactive live preview system with iframe embedding
-- **Testimonials**: Manage client reviews with ratings
-- **AI Chatbot**: Intelligent customer support with configurable responses
-- **SEO Management**: Per-page SEO settings with AI generation
-- **Contact Form**: Submissions stored in database
+### Public Website
+- **Service Pages**: ERP, HRM, CRM, AI Integration, Web & Mobile Development
+- **Location Pages**: Software Company Dhaka, IT Services Bangladesh
+- **Portfolio/Case Studies**: Project showcases with image galleries
+- **Live Demos**: Interactive iframe previews with device switching
+- **Blog**: SEO-optimized articles with AI content generation
+- **AI Chatbot**: Intelligent customer support widget
+- **WhatsApp Integration**: Floating contact button
+- **Consultation Popup**: Smart lead capture triggered by user behavior
 
-### New Features
-- **Live Preview System**: Interactive iframe-based website previews with device switching (Desktop/Tablet/Mobile)
-- **Consultation Popup**: Smart popup system triggered by user behavior (time on page, scroll depth, exit intent)
-- **WhatsApp Integration**: Floating WhatsApp button with pre-filled messages
-- **Visitor Analytics**: Track page views, clicks, scroll depth, and time on page
-- **Interaction Heatmaps**: Visual analytics of user interactions
-- **GDPR Cookie Consent**: Customizable consent banner with category management
+### Admin Dashboard (`/admin`)
+- **Dashboard**: Overview with stats and quick actions
+- **Blog Management**: Full CRUD with SEO metadata
+- **Portfolio Management**: Case studies with galleries
+- **Demo Management**: 
+  - Bulk import via JSON/CSV
+  - Access credentials (username/password/code)
+  - Masked shareable URLs
+  - View count tracking
+- **SEO Dashboard**: AI content generator, keyword tracking
+- **Analytics**: Page views, sessions, device breakdown
+- **Branding**: Logo, colors, contact info, social links
+- **Testimonials**: Client reviews management
+- **Messages**: Contact form submissions
+- **Consultations**: Lead management
 
-### Enhancements
-- **Demo Management**: Bulk import demo projects via JSON/CSV, masked shareable links, copy-to-clipboard for demo URLs, and demo access credentials support (username/password/code/notes).
-- **Preview Modal**: Shows demo credentials with one-click copy and device previews for desktop/tablet/mobile.
-- **Contact Consistency**: Contact page and contact section now read phone, email, and WhatsApp from branding settings for consistent contact information across the site.
-- **New Pages**: Added dedicated SEO service pages for HRM, CRM, and Mobile Development, and a location page for IT Services Bangladesh.
+### SEO Features
+- **JSON-LD Structured Data**: Organization, Service, LocalBusiness, FAQPage
+- **Dynamic Meta Tags**: Per-page SEO settings
+- **Sitemap**: Auto-generated XML sitemap
+- **AI Content Generator**: Blog posts, service pages, location content
+
+---
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18, TypeScript, Vite
 - **Styling**: Tailwind CSS, shadcn/ui
 - **Backend**: Lovable Cloud (Supabase-powered)
+- **AI**: Lovable AI for content generation
 - **Deployment**: GitHub Actions → cPanel
 
 ---
 
-## 📋 Setup Instructions
+## 📋 Quick Start
 
 ### Prerequisites
+- Node.js 20+
+- npm
 
-- Node.js 20+ and npm
-- Git
-- cPanel hosting with FTP access (for deployment)
-
-### Local Development
+### Development
 
 ```bash
-# 1. Clone the repository
+# Clone repository
 git clone <YOUR_GIT_URL>
 cd <YOUR_PROJECT_NAME>
 
-# 2. Install dependencies
+# Install dependencies
 npm install
 
-# 3. Start development server
+# Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:8080`
-
----
-
-## 🔐 Environment Variables
-
-The `.env` file is automatically configured by Lovable Cloud:
-
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
-VITE_SUPABASE_PROJECT_ID=your_project_id
-```
-
-> **Note**: These are automatically managed - do not edit manually.
+App runs at `http://localhost:8080`
 
 ---
 
@@ -81,188 +80,64 @@ VITE_SUPABASE_PROJECT_ID=your_project_id
 
 ### Step 1: Configure GitHub Secrets
 
-Go to your GitHub repository → Settings → Secrets and variables → Actions → New repository secret
+Go to: Repository → Settings → Secrets and variables → Actions
 
-Add the following secrets:
+Add these secrets:
 
-| Secret Name | Description |
-|-------------|-------------|
+| Secret | Description |
+|--------|-------------|
 | `VITE_SUPABASE_URL` | Supabase project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase anon key |
 
-### Step 2: Deploy
-
-Deployment is automatic on push to `main` branch:
+### Step 2: Push to Deploy
 
 ```bash
 git add .
-git commit -m "Your changes"
+git commit -m "Deploy update"
 git push origin main
 ```
 
-The GitHub Action will:
-1. ✅ Build the React application
-2. ✅ Generate optimized production files
-3. ✅ Create `.htaccess` for SPA routing
-4. ✅ Create `deploy-package.zip` artifact
+GitHub Actions automatically:
+1. ✅ Builds the React app
+2. ✅ Creates `.htaccess` with SPA routing, HTTPS, caching
+3. ✅ Packages everything into `deploy-cpanel.zip`
+4. ✅ Uploads as artifact
 
-### Step 3: Manual Upload to cPanel
+### Step 3: Upload to cPanel
 
-1. Download `deploy-package` artifact from GitHub Actions
-2. Login to cPanel File Manager
-3. Navigate to `public_html` folder
-4. Upload and extract `deploy-package.zip`
-5. Delete the ZIP file after extraction
+1. Go to **GitHub Actions** → Select latest run → Download `deploy-cpanel` artifact
+2. Login to **cPanel** → **File Manager**
+3. Navigate to `public_html`
+4. **Upload** `deploy-cpanel.zip`
+5. Right-click → **Extract**
+6. **Delete** the ZIP file
 
-### cPanel Manual Upload — Detailed Guide
-
-1. Backup current `public_html` (download a ZIP backup or copy files to a `backup/` folder).
-2. If you have a custom `.htaccess`, download it first — the workflow creates a default `.htaccess` in `dist` but you may want to preserve custom rules.
-3. In cPanel File Manager, click `Upload` and select `deploy-package.zip` (artifact from Actions).
-4. After upload completes, select the file and click `Extract`. Choose `public_html/` as the destination.
-5. Verify that `index.html` and the asset folders (e.g., `assets/`) are present at the site root.
-6. Remove the `deploy-package.zip` file from the server after extracting to save space.
-7. Confirm file permissions — static assets should be world-readable (typically `644`) and folders `755`.
-8. If you use custom redirects or rewrites, merge them into the `.htaccess` generated by the workflow.
-
-Notes & troubleshooting:
-- If you see 404s for client-side routes, ensure `.htaccess` is present and `mod_rewrite` enabled in Apache.
-- For large uploads, use cPanel's `Upload` via FTP or the Terminal (if available) to avoid timeouts.
-
-### Credentials & Admin Access (Supabase)
-
-The frontend is static — runtime secrets are baked at build time via GitHub Secrets. To configure admin accounts and backend credentials:
-
-1. Go to your Supabase project dashboard.
-2. Under `Authentication` -> `Users`, create an admin user with email and password (or invite an existing email).
-3. Under `Table Editor`, open the `profiles` table and add/update the profile row for that user (name, role, company fields as needed).
-4. If you use a `user_roles` table, add an entry granting the `admin` role to the new user. Alternatively, use your app's admin setup UI after signing in.
-
-Security tips:
-- Use long, unique passwords for admin accounts and enable MFA if supported.
-- Keep GitHub Secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`) private and rotate keys if compromised.
-- Use RLS (Row Level Security) and policies in Supabase to restrict admin-only operations.
-
-### CI: browserslist DB update
-
-The workflow now runs `npx update-browserslist-db@latest --quiet` before the build to keep `caniuse-lite` current and suppress the build-time warning. No action is needed on your side, but you can run the same command locally to update your environment.
-
-### Optional: Automate deployment via FTP/SFTP
-
-If you prefer automatic uploads to cPanel, you can add an extra step in the workflow to upload `deploy-package.zip` via `appleboy/scp-action` or use FTP actions — this requires storing FTP credentials as GitHub Secrets (e.g., `CPANEL_FTP_HOST`, `CPANEL_FTP_USER`, `CPANEL_FTP_PASSWORD`). For security, prefer short-lived deploy keys and limit permissions.
+**Done!** Site is live at engineerstechbd.com
 
 ---
 
-### Parallel Phased Action Workflow (recommended)
+## 🔐 Environment Variables
 
-This project follows a phased approach to implement large updates safely and in parallel. Use the plan below to coordinate work, CI, and releases.
+Auto-configured by Lovable Cloud (do not edit manually):
 
-- Phase 1 — Audit & Fixes
-   - Run linters and build in CI.
-   - Audit responsive layouts and accessibility across devices.
-   - Fix critical layout and UX issues (Header, Footer, Hero, Contact, PreviewModal).
-
-- Phase 2 — Demo Management & Analytics
-   - Implement bulk import, masked links, credentials handling (admin features are implemented in `DemoManagement`).
-   - Add fingerprinting and categorize interaction events for richer reporting (implemented in `useAnalytics` and `Analytics`).
-   - Add DB migrations to add `fingerprint` and `category` columns to analytics tables.
-
-- Phase 3 — Security & Performance
-   - Harden iframe usage, set `referrerPolicy="no-referrer"` and `loading="lazy"` on preview iframes (done).
-   - Improve build chunking (see `vite.config.ts` manualChunks) and run `npx update-browserslist-db@latest` in CI (workflow updated).
-   - Review CSP and security headers in `.htaccess` (workflow generates a baseline `.htaccess`).
-
-- Phase 4 — Polish, Docs & Deployment
-   - Finish responsive polish and accessibility fixes.
-   - Update `README.md` with deployment steps and admin setup (this file).
-   - Prepare release notes and changelog; create PR for review.
-
-- Phase 5 — Release & Monitor
-   - Merge PR, build artifact, and upload to cPanel (manual or automated FTP step).
-   - Monitor analytics and error logs; iterate on feedback.
-
-DB migration notes:
-- Add `fingerprint` (text) to `visitor_analytics` and `interaction_events` tables.
-- Optionally add a `category` column to `interaction_events` for categorized event reports.
-
-Migration file included:
-
-- `supabase/migrations/20260108_add_fingerprint_category.sql` — adds `fingerprint` to `visitor_analytics` and `interaction_events`, adds `category` to `interaction_events`, and creates indexes.
-
-How to apply the migration:
-
-1. Using Supabase SQL Editor: open the Supabase project -> SQL Editor -> New query, paste the SQL from the migration file and run.
-2. Using psql (example):
-
-```bash
-# Export connection string first (from Supabase project settings)
-export DATABASE_URL="postgresql://<user>:<pass>@<host>:5432/<db>"
-psql "$DATABASE_URL" -f supabase/migrations/20260108_add_fingerprint_category.sql
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+VITE_SUPABASE_PROJECT_ID=your_project_id
 ```
-
-3. Using Supabase CLI (if configured):
-
-```bash
-supabase db remote set <YOUR_CONNECTION_STRING>
-psql "$SUPABASE_REMOTE_URL" -f supabase/migrations/20260108_add_fingerprint_category.sql
-```
-
-Notes:
-- Run migrations in a maintenance window for production environments.
-- Backup the database before applying schema changes.
-- After applying, verify data and update any RLS policies if needed to account for the new columns.
-
-CI & PR checklist:
-- Run `npm ci` and `npm run build` in CI.
-- Run `npx update-browserslist-db@latest` before the build to keep caniuse-lite current (workflow step added).
-- Include screenshots and responsive checks in PR description.
-- Assign reviewers for accessibility and security.
-
-## 🗄️ Database Schema
-
-The application uses the following tables:
-
-| Table | Purpose |
-|-------|---------|
-| `branding_settings` | Logo, colors, contact info, social links, WhatsApp number |
-| `blog_posts` | Blog articles with SEO metadata |
-| `case_studies` | Portfolio projects with galleries |
-| `demo_projects` | Live demo projects with preview settings |
-| `testimonials` | Client reviews and ratings |
-| `chatbot_config` | AI chatbot Q&A patterns |
-| `seo_settings` | Per-page SEO configuration |
-| `contact_submissions` | Contact form entries |
-| `consultation_requests` | Consultation popup submissions |
-| `visitor_analytics` | Page view and engagement metrics |
-| `interaction_events` | Click tracking and heatmap data |
-| `profiles` | User profiles |
-| `user_roles` | Role-based access control |
 
 ---
 
 ## 👤 Admin Access
 
-Default admin emails (configured in database trigger):
+### Default Admin Emails
 - `ceo@engineerstechbd.com`
 - `admin@engineerstechbd.com`
 - `info@engineerstechbd.com`
 
-### Admin Panel Features
-
-Navigate to `/admin` after logging in:
-
-- **Dashboard**: Overview of content and analytics
-- **Blog Management**: Create, edit, publish blog posts
-- **Portfolio Management**: Manage case studies
-- **Demo Management**: Configure live demo projects
-- **Testimonials**: Manage client reviews
-- **Messages**: View contact form submissions
-- **Consultations**: Manage consultation requests
-- **Analytics**: Visitor analytics dashboard
-- **SEO Settings**: Per-page SEO configuration
-- **Chatbot Config**: AI chatbot responses
-- **Branding**: Logo, colors, contact info
-- **Settings**: Account settings
+### Creating Admin Users
+1. Sign up at `/auth`
+2. Add user to `user_roles` table with `admin` role
 
 ---
 
@@ -271,145 +146,96 @@ Navigate to `/admin` after logging in:
 ```
 ├── src/
 │   ├── components/
-│   │   ├── admin/          # Admin panel components
-│   │   ├── analytics/      # Interaction tracking
-│   │   ├── chatbot/        # AI chatbot widget
-│   │   ├── consultation/   # Consultation popup & WhatsApp
+│   │   ├── admin/          # Admin components
+│   │   ├── analytics/      # Tracking
+│   │   ├── chatbot/        # AI chatbot
+│   │   ├── consultation/   # Popup & WhatsApp
 │   │   ├── gdpr/           # Cookie consent
 │   │   ├── home/           # Homepage sections
-│   │   ├── layout/         # Header, Footer, Layout
-│   │   ├── portfolio/      # Live preview components
-│   │   └── ui/             # shadcn/ui components
-│   ├── hooks/
-│   │   ├── useAnalytics.tsx  # Analytics tracking
-│   │   ├── useAuth.tsx       # Authentication
-│   │   ├── useBranding.tsx   # Dynamic branding
-│   │   └── useConsent.tsx    # GDPR consent management
+│   │   ├── layout/         # Header, Footer
+│   │   ├── portfolio/      # Preview components
+│   │   ├── seo/            # JsonLd, SEOHead
+│   │   └── ui/             # shadcn/ui
+│   ├── hooks/              # Custom React hooks
 │   ├── pages/
-│   │   ├── admin/          # Admin dashboard pages
-│   │   └── *.tsx           # Public pages
-│   ├── integrations/
-│   │   └── supabase/       # Supabase client & types
-│   └── index.css           # Global styles & design tokens
+│   │   ├── admin/          # Dashboard pages
+│   │   ├── services/       # Service pages
+│   │   └── locations/      # Location pages
+│   └── integrations/       # Supabase client
 ├── supabase/
 │   ├── functions/          # Edge functions
-│   └── config.toml         # Supabase configuration
-├── .github/
-│   └── workflows/
-│       └── deploy.yml      # CI/CD pipeline
+│   └── config.toml
+├── .github/workflows/      # CI/CD
 └── public/                 # Static assets
 ```
+
+---
+
+## 🗄️ Database Tables
+
+| Table | Purpose |
+|-------|---------|
+| `branding_settings` | Logo, colors, contact info |
+| `blog_posts` | Blog articles with SEO |
+| `case_studies` | Portfolio projects |
+| `demo_projects` | Live demos with credentials |
+| `testimonials` | Client reviews |
+| `chatbot_config` | AI responses |
+| `seo_settings` | Per-page SEO |
+| `contact_submissions` | Form entries |
+| `consultation_requests` | Lead submissions |
+| `visitor_analytics` | Page views, engagement |
+| `interaction_events` | Click tracking |
 
 ---
 
 ## 🔧 Customization
 
 ### Branding
-
-1. Log in to admin panel (`/auth`)
-2. Go to **Branding Settings**
-3. Upload logo, update colors, contact info, social links
-4. Configure WhatsApp number for floating button
-5. Changes reflect across the entire site
+Admin → Branding Settings → Update logo, colors, contact info
 
 ### SEO
-
-1. Go to **SEO Settings** in admin
-2. Configure meta titles, descriptions, keywords per page
-3. Upload OG images for social sharing
-4. Use "Generate with AI" for automated suggestions
-
-### Analytics
-
-1. Go to **Analytics** in admin
-2. View page views, unique sessions, device breakdown
-3. Monitor popular pages and user engagement
-4. Track consultation conversion rates
+Admin → SEO Settings → Configure meta tags per page  
+Admin → SEO Dashboard → Use AI to generate content
 
 ### Live Demos
-
-1. Go to **Demo Management** in admin
-2. Add demo projects with:
-   - Demo URL for iframe preview
-   - Thumbnail fallback image
-   - Preview mode (iframe/screenshot/external)
-   - Allow interaction toggle
-3. View counts are tracked automatically
-
-### Consultation Popup
-
-The popup triggers automatically based on:
-- Time on page (45 seconds)
-- Scroll depth (60%)
-- Exit intent (mouse leaves viewport)
-
-Users can also trigger via:
-- "Get Quote" buttons on projects
-- WhatsApp floating button
-
----
-
-## 🔒 GDPR Compliance
-
-The application includes a GDPR-compliant cookie consent system:
-
-- **Cookie Banner**: Appears on first visit
-- **Consent Categories**: Necessary, Analytics, Marketing
-- **Preference Storage**: Saved to localStorage
-- **Analytics Gating**: Tracking only enabled after consent
-
-### Privacy Policy
-
-Update the privacy policy at `/privacy` with:
-- Cookie usage explanation
-- Data collection purposes
-- User rights (access, deletion, portability)
-- Contact information for data requests
+Admin → Demo Management → Add projects with:
+- Demo URL for iframe preview
+- Access credentials (username/password)
+- Bulk import from JSON/CSV
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Build Fails
+### 404 on Routes
+- Verify `.htaccess` is in `public_html`
+- Ensure `mod_rewrite` is enabled in cPanel
 
+### Demo Preview Not Loading
+- Site may block iframe embedding (X-Frame-Options)
+- Use "external" preview mode for such sites
+
+### Build Fails
 ```bash
-# Clear cache and reinstall
 rm -rf node_modules package-lock.json
 npm install
 npm run build
 ```
 
-### 404 Errors on Routes
-
-- Verify `.htaccess` is deployed to `public_html`
-- Check if `mod_rewrite` is enabled in cPanel
-
-### Analytics Not Tracking
-
-- Ensure user has accepted analytics cookies
-- Check browser console for errors
-- Verify RLS policies allow anonymous inserts
-
-### Live Preview Not Loading
-
-- Some sites block iframe embedding (X-Frame-Options)
-- The component falls back to thumbnail automatically
-- External sites may require "external" preview mode
-
 ---
 
 ## 📚 Resources
 
-- [Lovable Documentation](https://docs.lovable.dev/)
+- [Lovable Docs](https://docs.lovable.dev/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
-- [shadcn/ui Components](https://ui.shadcn.com/)
-- [React Router](https://reactrouter.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
 
 ---
 
 ## 📄 License
 
-This project is proprietary. All rights reserved by engineersTech.
+Proprietary. All rights reserved by engineersTech.
 
 ---
 

@@ -17,11 +17,14 @@ import {
 interface AnalyticsData {
   totalPageViews: number;
   uniqueSessions: number;
+  uniqueVisitors: number;
   avgTimeOnPage: number;
   avgScrollDepth: number;
   deviceBreakdown: { desktop: number; tablet: number; mobile: number };
   topPages: { page_path: string; views: number }[];
   recentEvents: { event_type: string; element_type: string; created_at: string }[];
+  topEventTypes: { event_type: string; count: number }[];
+  topCategories: { category: string; count: number }[];
 }
 
 export default function Analytics() {
@@ -61,8 +64,8 @@ export default function Analytics() {
 
       // Process analytics data
       const uniqueSessions = new Set(analytics?.map((a) => a.session_id)).size;
-      // Unique fingerprints (approximate unique visitors)
-      const uniqueFingerprints = new Set(analytics?.map((a) => a.fingerprint)).size;
+      // Unique visitors (using session_id as proxy since fingerprint not in schema)
+      const uniqueVisitors = uniqueSessions;
       const totalPageViews = analytics?.length || 0;
       
       const timeOnPage = analytics?.filter((a) => a.time_on_page > 0) || [];
@@ -123,15 +126,14 @@ export default function Analytics() {
       setData({
         totalPageViews,
         uniqueSessions,
+        uniqueVisitors,
         avgTimeOnPage: Math.round(avgTimeOnPage),
         avgScrollDepth: Math.round(avgScrollDepth),
         deviceBreakdown,
         topPages,
         recentEvents,
-        // attach new report fields
         topEventTypes,
         topCategories,
-        uniqueFingerprints: uniqueFingerprints || 0,
       });
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
@@ -155,7 +157,7 @@ export default function Analytics() {
     },
     {
       label: "Unique Visitors",
-      value: (data as any)?.uniqueFingerprints || 0,
+      value: data?.uniqueVisitors || 0,
       icon: Users,
       color: "text-teal-500",
     },

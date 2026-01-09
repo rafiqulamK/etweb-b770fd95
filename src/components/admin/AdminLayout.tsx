@@ -31,6 +31,7 @@ const sidebarLinks = [
   { href: "/admin/consultations", icon: MessageSquare, label: "Consultations" },
   { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/admin/seo", icon: Search, label: "SEO Settings" },
+  { href: "/admin/seo-dashboard", icon: BarChart3, label: "SEO Dashboard" },
   { href: "/admin/chatbot", icon: Bot, label: "Chatbot Config" },
   { href: "/admin/branding", icon: Palette, label: "Branding" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
