@@ -18,7 +18,9 @@ A modern, full-stack web application for engineersTech BD - Bangladesh's leading
 - **WhatsApp Integration**: Floating contact button
 - **Consultation Popup**: Smart lead capture triggered by user behavior
 
-### Admin Dashboard (`/admin`)
+### Admin Dashboard
+Access via URL: `/admin` (no public link on website)
+
 - **Dashboard**: Overview with stats and quick actions
 - **Blog Management**: Full CRUD with SEO metadata
 - **Portfolio Management**: Case studies with galleries
@@ -37,8 +39,14 @@ A modern, full-stack web application for engineersTech BD - Bangladesh's leading
 ### SEO Features
 - **JSON-LD Structured Data**: Organization, Service, LocalBusiness, FAQPage
 - **Dynamic Meta Tags**: Per-page SEO settings
-- **Sitemap**: Auto-generated XML sitemap
+- **Sitemap**: Auto-generated XML sitemap at `/sitemap.xml`
 - **AI Content Generator**: Blog posts, service pages, location content
+
+### Security Features
+- **RLS Policies**: Row-level security with input validation
+- **Email Validation**: Regex validation on form submissions
+- **Length Limits**: Character limits on all user inputs
+- **Admin Protection**: Role-based access control
 
 ---
 
@@ -98,10 +106,16 @@ git push origin main
 ```
 
 GitHub Actions automatically:
-1. ✅ Builds the React app
-2. ✅ Creates `.htaccess` with SPA routing, HTTPS, caching
-3. ✅ Packages everything into `deploy-cpanel.zip`
-4. ✅ Uploads as artifact
+1. ✅ Builds the React app with optimizations
+2. ✅ Updates browserslist database
+3. ✅ Creates `.htaccess` with:
+   - SPA routing
+   - HTTPS redirect
+   - Security headers
+   - Asset caching (1 year for static files)
+   - Gzip compression
+4. ✅ Packages everything into `deploy-cpanel.zip`
+5. ✅ Uploads as downloadable artifact
 
 ### Step 3: Upload to cPanel
 
@@ -110,9 +124,19 @@ GitHub Actions automatically:
 3. Navigate to `public_html`
 4. **Upload** `deploy-cpanel.zip`
 5. Right-click → **Extract**
-6. **Delete** the ZIP file
+6. **Delete** the ZIP file after extraction
 
 **Done!** Site is live at engineerstechbd.com
+
+### .htaccess Features
+
+The generated `.htaccess` includes:
+- **SPA Routing**: All routes serve `index.html`
+- **HTTPS Redirect**: Forces secure connections
+- **Security Headers**: X-Frame-Options, X-Content-Type-Options, XSS Protection
+- **Caching**: 1 year cache for images, fonts, CSS, JS
+- **Compression**: Gzip for text-based files
+- **Protected Files**: Blocks access to .env, .git, package.json
 
 ---
 
@@ -130,6 +154,10 @@ VITE_SUPABASE_PROJECT_ID=your_project_id
 
 ## 👤 Admin Access
 
+### Accessing Admin Panel
+Navigate directly to: `https://engineerstechbd.com/admin`  
+(No public link on website for security)
+
 ### Default Admin Emails
 - `ceo@engineerstechbd.com`
 - `admin@engineerstechbd.com`
@@ -137,7 +165,7 @@ VITE_SUPABASE_PROJECT_ID=your_project_id
 
 ### Creating Admin Users
 1. Sign up at `/auth`
-2. Add user to `user_roles` table with `admin` role
+2. Add user to `user_roles` table with `admin` role in database
 
 ---
 
@@ -165,7 +193,7 @@ VITE_SUPABASE_PROJECT_ID=your_project_id
 ├── supabase/
 │   ├── functions/          # Edge functions
 │   └── config.toml
-├── .github/workflows/      # CI/CD
+├── .github/workflows/      # CI/CD pipeline
 └── public/                 # Static assets
 ```
 
