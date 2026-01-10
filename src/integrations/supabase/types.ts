@@ -254,12 +254,38 @@ export type Database = {
         }
         Relationships: []
       }
-      demo_projects: {
+      demo_project_credentials: {
         Row: {
           access_code: string | null
           access_notes: string | null
           access_password: string | null
           access_username: string | null
+          created_at: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_code?: string | null
+          access_notes?: string | null
+          access_password?: string | null
+          access_username?: string | null
+          created_at?: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_code?: string | null
+          access_notes?: string | null
+          access_password?: string | null
+          access_username?: string | null
+          created_at?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      demo_projects: {
+        Row: {
           allow_interaction: boolean | null
           created_at: string
           demo_url: string | null
@@ -277,10 +303,6 @@ export type Database = {
           view_count: number | null
         }
         Insert: {
-          access_code?: string | null
-          access_notes?: string | null
-          access_password?: string | null
-          access_username?: string | null
           allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null
@@ -298,10 +320,6 @@ export type Database = {
           view_count?: number | null
         }
         Update: {
-          access_code?: string | null
-          access_notes?: string | null
-          access_password?: string | null
-          access_username?: string | null
           allow_interaction?: boolean | null
           created_at?: string
           demo_url?: string | null

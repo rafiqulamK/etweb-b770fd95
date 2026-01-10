@@ -33,6 +33,10 @@ interface DemoProject {
   is_featured: boolean;
   status: string;
   created_at: string;
+}
+
+interface DemoProjectCredentials {
+  project_id: string;
   access_username: string | null;
   access_password: string | null;
   access_code: string | null;
@@ -56,6 +60,7 @@ const defaultFormData = {
 
 export default function DemoManagement() {
   const [projects, setProjects] = useState<DemoProject[]>([]);
+  const [credentialsByProjectId, setCredentialsByProjectId] = useState<Record<string, DemoProjectCredentials>>({});
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
@@ -75,14 +80,35 @@ export default function DemoManagement() {
   const fetchProjects = async () => {
     const { data, error } = await supabase
       .from("demo_projects")
-      .select("*")
+      .select("id, title, description, project_type, demo_url, thumbnail, technologies, is_featured, status, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      setProjects(data || []);
+      setLoading(false);
+      return;
     }
+
+    const list = (data || []) as DemoProject[];
+    setProjects(list);
+
+    // Fetch credentials (admin-only table) for UI indicators + edit form
+    if (list.length) {
+      const ids = list.map((p) => p.id);
+      const { data: credData } = await supabase
+        .from("demo_project_credentials")
+        .select("project_id, access_username, access_password, access_code, access_notes")
+        .in("project_id", ids);
+
+      const map: Record<string, DemoProjectCredentials> = {};
+      (credData || []).forEach((c) => {
+        map[c.project_id] = c as DemoProjectCredentials;
+      });
+      setCredentialsByProjectId(map);
+    } else {
+      setCredentialsByProjectId({});
+    }
+
     setLoading(false);
   };
 
