@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/hooks/useBranding";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 interface AccessCredentials {
@@ -44,30 +45,40 @@ export function PreviewModal({
   const [showCredentials, setShowCredentials] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const { branding } = useBranding();
+  const { isAdmin } = useAuth();
 
   const whatsappNumber = branding?.whatsapp_number || "+8801873722228";
   const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "");
   const whatsappLink = `https://wa.me/${cleanNumber}?text=Hi! I'm interested in a project similar to "${title}". Can we discuss?`;
 
-  // Fetch credentials for the project
+  // Credentials are now stored in a protected table and only visible to admins.
   useEffect(() => {
-    if (projectId && isOpen) {
-      fetchCredentials();
+    if (!isAdmin) {
+      setCredentials(null);
+      setShowCredentials(false);
+      return;
     }
-  }, [projectId, isOpen]);
+    if (projectId && isOpen) {
+      void fetchCredentials();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, isOpen, isAdmin]);
 
   const fetchCredentials = async () => {
     if (!projectId) return;
-    
-    const { data } = await supabase
-      .from("demo_projects")
-      .select("access_username, access_password, access_code, access_notes")
-      .eq("id", projectId)
-      .single();
 
-    if (data && (data.access_username || data.access_password || data.access_code)) {
+    const { data } = await supabase
+      .from("demo_project_credentials")
+      .select("access_username, access_password, access_code, access_notes")
+      .eq("project_id", projectId)
+      .maybeSingle();
+
+    if (data && (data.access_username || data.access_password || data.access_code || data.access_notes)) {
       setCredentials(data);
       setShowCredentials(true);
+    } else {
+      setCredentials(null);
+      setShowCredentials(false);
     }
   };
 
@@ -77,7 +88,7 @@ export function PreviewModal({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const hasCredentials = credentials && (credentials.access_username || credentials.access_password || credentials.access_code);
+  const hasCredentials = !!credentials;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
