@@ -113,19 +113,19 @@ export default function Demo() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="py-16 sm:py-20 md:py-32 relative">
+      <section className="py-12 sm:py-16 md:py-24 lg:py-32 relative">
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-glow opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] bg-gradient-glow opacity-30" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
+            <span className="text-primary text-xs sm:text-sm font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
               Live Demos
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-4 md:mb-6 leading-tight">
               Experience Our <span className="text-gradient">Work in Action</span>
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground px-2">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground px-2 max-w-2xl mx-auto">
               Explore live demos of our apps, websites, and software solutions. 
               See the quality and functionality we deliver firsthand.
             </p>
@@ -134,32 +134,32 @@ export default function Demo() {
       </section>
 
       {/* Search & Filter Section */}
-      <section className="py-12 sm:py-16 md:py-20 bg-card">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-card">
         <div className="container mx-auto px-4">
           {/* Search Bar */}
-          <div className="max-w-xl mx-auto mb-8">
+          <div className="max-w-md sm:max-w-lg md:max-w-xl mx-auto mb-6 sm:mb-8">
             <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground sm:w-[18px] sm:h-[18px]" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search demos by name or description..."
-                className="pl-10 bg-secondary border-border"
+                className="pl-9 sm:pl-10 bg-secondary border-border text-sm sm:text-base h-10 sm:h-11"
               />
             </div>
           </div>
 
           {/* Filter Buttons */}
           {projects.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
-              <Filter size={18} className="text-muted-foreground hidden sm:block" />
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-6 sm:mb-8 md:mb-12">
+              <Filter size={16} className="text-muted-foreground hidden sm:block" />
               {projectTypes.map((type) => (
                 <Button
                   key={type}
                   variant={filter === type ? "gradient" : "outline"}
                   size="sm"
                   onClick={() => setFilter(type)}
-                  className="capitalize text-xs sm:text-sm"
+                  className="capitalize text-xs sm:text-sm px-3 sm:px-4 h-8 sm:h-9"
                 >
                   {type === "all" ? "All Projects" : typeLabels[type] || type}
                 </Button>
@@ -195,7 +195,7 @@ export default function Demo() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
               {filteredProjects.map((project) => {
                 const TypeIcon = typeIcons[project.project_type] || Monitor;
                 const hasLivePreview = project.demo_url && project.preview_mode !== 'external';
@@ -326,17 +326,17 @@ export default function Demo() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-16 md:py-20 relative">
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 relative">
         <div className="absolute inset-0 bg-gradient-glow opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center bg-gradient-card rounded-2xl sm:rounded-3xl border border-border/50 p-6 sm:p-8 md:p-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+          <div className="max-w-3xl mx-auto text-center bg-gradient-card rounded-xl sm:rounded-2xl md:rounded-3xl border border-border/50 p-5 sm:p-6 md:p-8 lg:p-12">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4">
               Want a Custom Demo?
             </h2>
-            <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-4 sm:mb-6 md:mb-8 max-w-lg mx-auto">
               Schedule a personalized demonstration tailored to your specific requirements.
             </p>
-            <Button variant="gradient" size="lg" className="gap-2" onClick={handleConsultation}>
+            <Button variant="gradient" size="default" className="gap-2 h-10 sm:h-11 text-sm sm:text-base" onClick={handleConsultation}>
               Schedule Demo
             </Button>
           </div>
