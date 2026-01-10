@@ -135,13 +135,11 @@ export default function DemoManagement() {
       technologies: formData.technologies ? formData.technologies.split(",").map(t => t.trim()).filter(Boolean) : [],
       is_featured: formData.is_featured,
       status: formData.status,
-      access_username: formData.access_username || null,
-      access_password: formData.access_password || null,
-      access_code: formData.access_code || null,
-      access_notes: formData.access_notes || null,
     };
 
     let error;
+    let projectId = editingProject?.id;
+
     if (editingProject) {
       const { error: updateError } = await supabase
         .from("demo_projects")
@@ -149,25 +147,47 @@ export default function DemoManagement() {
         .eq("id", editingProject.id);
       error = updateError;
     } else {
-      const { error: insertError } = await supabase
+      const { data: inserted, error: insertError } = await supabase
         .from("demo_projects")
-        .insert([projectData]);
+        .insert([projectData])
+        .select("id")
+        .single();
       error = insertError;
+      projectId = inserted?.id;
     }
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Success", description: `Demo project ${editingProject ? "updated" : "created"} successfully` });
-      setIsDialogOpen(false);
-      resetForm();
-      fetchProjects();
+      setSaving(false);
+      return;
     }
+
+    // Save credentials to separate protected table
+    if (projectId) {
+      const credentialData = {
+        project_id: projectId,
+        access_username: formData.access_username || null,
+        access_password: formData.access_password || null,
+        access_code: formData.access_code || null,
+        access_notes: formData.access_notes || null,
+      };
+
+      // Upsert credentials
+      await supabase
+        .from("demo_project_credentials")
+        .upsert(credentialData, { onConflict: "project_id" });
+    }
+
+    toast({ title: "Success", description: `Demo project ${editingProject ? "updated" : "created"} successfully` });
+    setIsDialogOpen(false);
+    resetForm();
+    fetchProjects();
     setSaving(false);
   };
 
   const handleEdit = (project: DemoProject) => {
     setEditingProject(project);
+    const creds = credentialsByProjectId[project.id];
     setFormData({
       title: project.title,
       description: project.description || "",
@@ -177,10 +197,10 @@ export default function DemoManagement() {
       technologies: project.technologies?.join(", ") || "",
       is_featured: project.is_featured,
       status: project.status,
-      access_username: project.access_username || "",
-      access_password: project.access_password || "",
-      access_code: project.access_code || "",
-      access_notes: project.access_notes || "",
+      access_username: creds?.access_username || "",
+      access_password: creds?.access_password || "",
+      access_code: creds?.access_code || "",
+      access_notes: creds?.access_notes || "",
     });
     setIsDialogOpen(true);
   };
@@ -249,6 +269,7 @@ export default function DemoManagement() {
         parsedData = [parsedData];
       }
 
+      // Prepare project data (without credentials)
       const projectsToInsert = parsedData.map((item: Record<string, string>) => ({
         title: item.title || "Untitled Project",
         description: item.description || null,
@@ -257,15 +278,34 @@ export default function DemoManagement() {
         thumbnail: item.thumbnail || null,
         technologies: item.technologies ? (typeof item.technologies === 'string' ? item.technologies.split(",").map((t: string) => t.trim()) : item.technologies) : [],
         status: item.status || "draft",
+      }));
+
+      // Extract credentials from parsed data
+      const credentialsList = parsedData.map((item: Record<string, string>) => ({
         access_username: item.access_username || item.username || null,
         access_password: item.access_password || item.password || null,
         access_code: item.access_code || item.code || null,
         access_notes: item.access_notes || item.notes || null,
       }));
 
-      const { error } = await supabase.from("demo_projects").insert(projectsToInsert);
+      const { data: insertedProjects, error } = await supabase
+        .from("demo_projects")
+        .insert(projectsToInsert)
+        .select("id");
       
       if (error) throw error;
+
+      // Insert credentials for each project
+      if (insertedProjects && insertedProjects.length > 0) {
+        const credsToInsert = insertedProjects.map((p, idx) => ({
+          project_id: p.id,
+          ...credentialsList[idx],
+        })).filter(c => c.access_username || c.access_password || c.access_code || c.access_notes);
+
+        if (credsToInsert.length > 0) {
+          await supabase.from("demo_project_credentials").insert(credsToInsert);
+        }
+      }
 
       toast({ title: "Success", description: `Imported ${projectsToInsert.length} demo project(s)` });
       setIsBulkDialogOpen(false);
@@ -597,31 +637,37 @@ My Project,https://example.com,website,"React, Node.js",admin,demo123`}
                             Featured
                           </span>
                         )}
-                        {(project.access_username || project.access_password) && (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400 flex items-center gap-1">
-                            <Key size={10} />
-                            Has Credentials
-                          </span>
-                        )}
+                        {(() => {
+                          const creds = credentialsByProjectId[project.id];
+                          return (creds?.access_username || creds?.access_password) && (
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400 flex items-center gap-1">
+                              <Key size={10} />
+                              Has Credentials
+                            </span>
+                          );
+                        })()}
                       </div>
                       <p className="text-sm text-muted-foreground capitalize mb-2">{project.project_type}</p>
                       {project.description && (
                         <p className="text-sm text-muted-foreground line-clamp-2">{project.description}</p>
                       )}
                       {/* Show credentials if available */}
-                      {(project.access_username || project.access_password || project.access_code) && (
-                        <div className="mt-2 p-2 bg-muted/30 rounded text-xs space-y-1">
-                          {project.access_username && (
-                            <p><span className="text-muted-foreground">Username:</span> <span className="text-foreground font-mono">{project.access_username}</span></p>
-                          )}
-                          {project.access_password && (
-                            <p><span className="text-muted-foreground">Password:</span> <span className="text-foreground font-mono">{project.access_password}</span></p>
-                          )}
-                          {project.access_code && (
-                            <p><span className="text-muted-foreground">Code:</span> <span className="text-foreground font-mono">{project.access_code}</span></p>
-                          )}
-                        </div>
-                      )}
+                      {(() => {
+                        const creds = credentialsByProjectId[project.id];
+                        return (creds?.access_username || creds?.access_password || creds?.access_code) && (
+                          <div className="mt-2 p-2 bg-muted/30 rounded text-xs space-y-1">
+                            {creds?.access_username && (
+                              <p><span className="text-muted-foreground">Username:</span> <span className="text-foreground font-mono">{creds.access_username}</span></p>
+                            )}
+                            {creds?.access_password && (
+                              <p><span className="text-muted-foreground">Password:</span> <span className="text-foreground font-mono">{creds.access_password}</span></p>
+                            )}
+                            {creds?.access_code && (
+                              <p><span className="text-muted-foreground">Code:</span> <span className="text-foreground font-mono">{creds.access_code}</span></p>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
