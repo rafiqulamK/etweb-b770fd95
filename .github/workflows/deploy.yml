@@ -35,6 +35,47 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
+      - name: Verify build output (prevent blank page deployments)
+        run: |
+          echo "🔍 Verifying build output..."
+          
+          # Check dist/index.html exists
+          if [ ! -f dist/index.html ]; then
+            echo "❌ ERROR: dist/index.html not found!"
+            exit 1
+          fi
+          
+          # Check for production asset references (./assets/ with relative base)
+          if ! grep -q "assets/" dist/index.html; then
+            echo "❌ ERROR: No asset references found in index.html!"
+            cat dist/index.html
+            exit 1
+          fi
+          
+          # Ensure no dev-mode references leaked
+          if grep -q "/src/main.tsx" dist/index.html; then
+            echo "❌ ERROR: Dev-mode /src/main.tsx found in production build!"
+            cat dist/index.html
+            exit 1
+          fi
+          
+          # Ensure no CDN Tailwind (dev fallback) leaked
+          if grep -q "cdn.tailwindcss.com" dist/index.html; then
+            echo "❌ ERROR: Tailwind CDN found in production build!"
+            cat dist/index.html
+            exit 1
+          fi
+          
+          # List built assets
+          echo "✅ Build verification passed!"
+          echo "📦 Built assets:"
+          ls -la dist/
+          ls -la dist/assets/ 2>/dev/null || echo "No assets folder"
+          
+          echo ""
+          echo "📄 index.html preview:"
+          head -50 dist/index.html
+
       - name: Create .htaccess for SPA routing
         run: |
           cat > dist/.htaccess << 'EOF'
