@@ -25,7 +25,7 @@ const sidebarLinks = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/blog", icon: FileText, label: "Blog Posts" },
   { href: "/admin/portfolio", icon: Briefcase, label: "Case Studies" },
-  { href: "/admin/demo", icon: Play, label: "Demo Projects" },
+  { href: "/admin/demo", icon: Play, label: "Project Showcase" },
   { href: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
   { href: "/admin/messages", icon: Mail, label: "Messages" },
   { href: "/admin/consultations", icon: MessageSquare, label: "Consultations" },
