@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Code2, Brain, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const stats = [
-  { value: 50, suffix: "+", label: "Projects Completed" },
-  { value: 30, suffix: "+", label: "Happy Clients" },
-  { value: 8, suffix: "+", label: "Years Experience" },
+const serviceTags = [
+  { icon: Code2, label: "Software Development" },
+  { icon: Brain, label: "AI Solutions" },
+  { icon: Settings, label: "IT Consulting" },
 ];
 
 function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
@@ -57,10 +57,10 @@ export function HeroSection() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-secondary border border-border mb-6 sm:mb-8 animate-fade-in">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-secondary/50 border border-border/50 mb-6 sm:mb-8 animate-fade-in backdrop-blur-sm">
+            <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-xs sm:text-sm text-muted-foreground">
-              Trusted by 30+ businesses worldwide
+              Innovating Tomorrow, Today
             </span>
           </div>
 
@@ -69,8 +69,11 @@ export function HeroSection() {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-4 sm:mb-6 animate-fade-in leading-tight"
             style={{ animationDelay: "0.1s" }}
           >
-            Enterprise Tech Solutions{" "}
-            <span className="text-gradient">for the Future</span>
+            Transform Your Business{" "}
+            <br className="hidden sm:block" />
+            with <span className="text-gradient">Cutting-Edge</span>
+            <br className="hidden sm:block" />
+            Technology
           </h1>
 
           {/* Subheading */}
@@ -78,13 +81,12 @@ export function HeroSection() {
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto animate-fade-in px-2"
             style={{ animationDelay: "0.2s" }}
           >
-            We deliver cutting-edge software solutions that transform businesses. 
-            From HRM to AI integration, we build technology that drives growth.
+            We deliver innovative software solutions, AI-powered systems, and expert IT consulting to help businesses thrive in the digital age.
           </p>
 
           {/* CTA Buttons */}
           <div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 animate-fade-in px-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-14 animate-fade-in px-4"
             style={{ animationDelay: "0.3s" }}
           >
             <Link to="/contact" className="w-full sm:w-auto">
@@ -93,27 +95,25 @@ export function HeroSection() {
                 <ArrowRight size={18} />
               </Button>
             </Link>
-            <Link to="/portfolio" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
-                <Play size={18} />
-                View Our Work
+            <Link to="/services" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto border-primary/30 hover:bg-primary/10">
+                Explore Services
               </Button>
             </Link>
           </div>
 
-          {/* Stats */}
+          {/* Service Tags */}
           <div 
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto animate-fade-in"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 animate-fade-in"
             style={{ animationDelay: "0.4s" }}
           >
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center group">
-                <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gradient">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                </span>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2 group-hover:text-foreground transition-colors">
-                  {stat.label}
-                </p>
+            {serviceTags.map((tag, index) => (
+              <div 
+                key={index} 
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/30 border border-primary/20 backdrop-blur-sm hover:border-primary/40 transition-colors"
+              >
+                <tag.icon className="w-4 h-4 text-primary" />
+                <span className="text-sm text-foreground/80">{tag.label}</span>
               </div>
             ))}
           </div>
