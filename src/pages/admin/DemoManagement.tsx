@@ -332,8 +332,8 @@ export default function DemoManagement() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Demo Projects</h1>
-            <p className="text-muted-foreground">Manage your live demos and showcases</p>
+            <h1 className="text-2xl font-bold text-foreground">Project Showcase</h1>
+            <p className="text-muted-foreground">Manage your projects and live demos</p>
           </div>
           <div className="flex gap-2">
             {/* Bulk Import Dialog */}

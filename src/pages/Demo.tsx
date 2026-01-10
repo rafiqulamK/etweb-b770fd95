@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { Monitor, Smartphone, Code2, Filter, Search } from "lucide-react";
+import { Monitor, Smartphone, Code2, Filter, Search, Briefcase, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { LivePreview } from "@/components/portfolio/LivePreview";
 import { PreviewModal } from "@/components/portfolio/PreviewModal";
 import { ConsultationPopup } from "@/components/consultation/ConsultationPopup";
+import { useBranding } from "@/hooks/useBranding";
 
 interface DemoProject {
   id: string;
@@ -35,6 +36,34 @@ const typeLabels: Record<string, string> = {
   software: "Software",
 };
 
+// Generate fingerprint for tracking
+const generateFingerprint = () => {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillText('fingerprint', 2, 2);
+  }
+  const nav = navigator;
+  const screen = window.screen;
+  const data = [
+    nav.userAgent,
+    nav.language,
+    screen.width + 'x' + screen.height,
+    new Date().getTimezoneOffset(),
+    canvas.toDataURL(),
+  ].join('|');
+  
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    const char = data.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(36);
+};
+
 export default function Demo() {
   const [searchParams] = useSearchParams();
   const [projects, setProjects] = useState<DemoProject[]>([]);
@@ -44,6 +73,10 @@ export default function Demo() {
   const [selectedProject, setSelectedProject] = useState<DemoProject | null>(null);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const { branding } = useBranding();
+  
+  const whatsappNumber = branding?.whatsapp_number || "+8801873722228";
+  const cleanNumber = whatsappNumber.replace(/[^0-9]/g, "");
 
   useEffect(() => {
     async function fetchProjects() {
@@ -97,6 +130,29 @@ export default function Demo() {
     setSelectedProject(project);
     setIsPreviewModalOpen(true);
     
+    const fingerprint = generateFingerprint();
+    const sessionId = sessionStorage.getItem('session_id') || `session_${Date.now()}_${fingerprint}`;
+    sessionStorage.setItem('session_id', sessionId);
+
+    // Track project view with fingerprint
+    try {
+      await supabase.from('interaction_events').insert({
+        session_id: sessionId,
+        page_path: `/showcase/${project.id}`,
+        event_type: 'project_view',
+        element_id: project.id,
+        element_type: 'project_card',
+        metadata: {
+          project_title: project.title,
+          project_type: project.project_type,
+          fingerprint,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      console.log('Tracking error:', error);
+    }
+    
     // Increment view count
     if (project.id) {
       await supabase
@@ -104,6 +160,37 @@ export default function Demo() {
         .update({ view_count: (project.view_count || 0) + 1 })
         .eq("id", project.id);
     }
+  };
+
+  const handleWhatsAppClick = async (project: DemoProject) => {
+    const fingerprint = generateFingerprint();
+    const sessionId = sessionStorage.getItem('session_id') || `session_${Date.now()}_${fingerprint}`;
+    sessionStorage.setItem('session_id', sessionId);
+
+    // Track WhatsApp click
+    try {
+      await supabase.from('interaction_events').insert({
+        session_id: sessionId,
+        page_path: `/showcase`,
+        event_type: 'whatsapp_click',
+        element_id: project.id,
+        element_type: 'project_whatsapp',
+        metadata: {
+          project_title: project.title,
+          project_type: project.project_type,
+          fingerprint,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      console.log('Tracking error:', error);
+    }
+
+    const message = `Hi! I'm interested in a project similar to "${project.title}" (${typeLabels[project.project_type] || project.project_type}).\n\nTechnologies used: ${project.technologies?.join(', ') || 'N/A'}\n\nPlease provide a quote and timeline for a similar solution.`;
+    window.open(
+      `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
 
   const handleConsultation = () => {
@@ -119,15 +206,16 @@ export default function Demo() {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="text-primary text-xs sm:text-sm font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
-              Live Demos
-            </span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+              <Briefcase size={16} className="text-primary" />
+              <span className="text-primary text-sm font-medium">Project Showcase</span>
+            </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-4 md:mb-6 leading-tight">
-              Experience Our <span className="text-gradient">Work in Action</span>
+              Explore Our <span className="text-gradient">Project Showcase</span>
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground px-2 max-w-2xl mx-auto">
-              Explore live demos of our apps, websites, and software solutions. 
-              See the quality and functionality we deliver firsthand.
+              Discover our portfolio of successful projects. Interactive demos, live previews, 
+              and detailed case studies of apps, websites, and enterprise solutions.
             </p>
           </div>
         </div>
@@ -143,7 +231,7 @@ export default function Demo() {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search demos by name or description..."
+                placeholder="Search projects by name or description..."
                 className="pl-9 sm:pl-10 bg-secondary border-border text-sm sm:text-base h-10 sm:h-11"
               />
             </div>
@@ -169,20 +257,20 @@ export default function Demo() {
 
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading demos...</p>
+              <p className="text-muted-foreground">Loading projects...</p>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12 max-w-md mx-auto">
               <div className="w-20 h-20 mx-auto rounded-full bg-gradient-primary flex items-center justify-center mb-6">
-                <Monitor size={40} className="text-primary-foreground" />
+                <Briefcase size={40} className="text-primary-foreground" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
-                {searchQuery ? "No Matching Demos" : "Demos Coming Soon"}
+                {searchQuery ? "No Matching Projects" : "Projects Coming Soon"}
               </h3>
               <p className="text-muted-foreground mb-6">
                 {searchQuery 
-                  ? "Try adjusting your search or browse all demos."
-                  : "We're preparing live demos of our projects. Check back soon or contact us for a personalized demo."}
+                  ? "Try adjusting your search or browse all projects."
+                  : "We're preparing our project showcase. Check back soon or contact us for a personalized demo."}
               </p>
               {searchQuery ? (
                 <Button variant="outline" onClick={() => setSearchQuery("")}>
@@ -230,13 +318,21 @@ export default function Demo() {
                           </span>
                         )}
                         {project.demo_url && (
-                          <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <Button
                               size="sm"
                               variant="gradient"
                               onClick={() => handleExpand(project)}
                             >
                               View Demo
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleWhatsAppClick(project)}
+                              className="gap-1"
+                            >
+                              <MessageCircle size={14} />
                             </Button>
                           </div>
                         )}
@@ -311,9 +407,11 @@ export default function Demo() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={handleConsultation}
+                          onClick={() => handleWhatsAppClick(project)}
+                          className="gap-1"
                         >
-                          Get Quote
+                          <MessageCircle size={14} />
+                          Quote
                         </Button>
                       </div>
                     </div>
@@ -331,14 +429,28 @@ export default function Demo() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center bg-gradient-card rounded-xl sm:rounded-2xl md:rounded-3xl border border-border/50 p-5 sm:p-6 md:p-8 lg:p-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4">
-              Want a Custom Demo?
+              Want a Custom Solution?
             </h2>
             <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-4 sm:mb-6 md:mb-8 max-w-lg mx-auto">
-              Schedule a personalized demonstration tailored to your specific requirements.
+              Schedule a personalized consultation tailored to your specific requirements.
             </p>
-            <Button variant="gradient" size="default" className="gap-2 h-10 sm:h-11 text-sm sm:text-base" onClick={handleConsultation}>
-              Schedule Demo
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button variant="gradient" size="default" className="gap-2 h-10 sm:h-11 text-sm sm:text-base" onClick={handleConsultation}>
+                Schedule Consultation
+              </Button>
+              <Button 
+                variant="outline" 
+                size="default" 
+                className="gap-2 h-10 sm:h-11 text-sm sm:text-base"
+                onClick={() => {
+                  const message = "Hi! I visited your Project Showcase and I'm interested in discussing a custom solution for my business. Please contact me with more details.";
+                  window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`, "_blank");
+                }}
+              >
+                <MessageCircle size={16} />
+                Chat on WhatsApp
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -360,7 +472,7 @@ export default function Demo() {
         isOpen={isConsultationOpen}
         onClose={() => setIsConsultationOpen(false)}
         projectContext={selectedProject?.title}
-        source="demo"
+        source="showcase"
       />
     </Layout>
   );
